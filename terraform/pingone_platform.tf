@@ -1,3 +1,4 @@
+# Baseline environment configuration.
 resource "pingone_environment" "target_environment" {
   name        = var.pingone_environment_name
   description = "PingOne CICD demo provisioned by Terraform"
