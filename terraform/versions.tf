@@ -3,11 +3,7 @@ terraform {
   required_providers {
     pingone = {
       source  = "pingidentity/pingone"
-      version = ">= 1.1.1, < 2.0.0"
-    }
-    davinci = {
-      source  = "pingidentity/davinci"
-      version = "~> 0.4"
+      version = ">= 1.19.1, < 2.0.0"
     }
   }
   backend "s3" {}

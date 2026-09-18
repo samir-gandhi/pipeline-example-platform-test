@@ -49,12 +49,30 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+    - name: Select branch tfvars secret
+      run: |-
+        _branch=$(echo "${GITHUB_REF}" | sed -e "s#refs/heads/##g")
+        _suffix=$(printf '%s' "${_branch}" | tr '[:lower:]/.-' '[:upper:]___')
+        case "${_suffix}" in
+          *[!A-Za-z0-9_]*|[0-9]*)
+            echo "ERROR: cannot derive a valid secret name from branch: ${_branch}"
+            exit 1
+            ;;
+        esac
+        echo "PING_EXPORT_SECRET_NAME=PING_EXPORT_TFVARS_${_suffix}" >> "${GITHUB_ENV}"
     - run: |-
         umask 077
         _secrets_file=$(mktemp)
-        trap 'rm -f "${_secrets_file}"' EXIT
+        _tfvars_file=$(mktemp)
+        trap 'rm -f "${_secrets_file}" "${_tfvars_file}"' EXIT
         printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
         . "${_secrets_file}"
+        [ -n "${PING_EXPORT_TFVARS_B64-}" ] || {
+          echo "ERROR: secret ${PING_EXPORT_SECRET_NAME} is not set; run ./scripts/upload_ping_export_tfvars.sh" >&2
+          exit 1
+        }
+        printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > "terraform/ping-export-terraform.auto.tfvars"
+        unset PING_EXPORT_TFVARS_B64
         _tfdir=terraform
         _branch=$(echo "${GITHUB_REF}" | sed -e "s#refs/heads/##g")
         export TF_VAR_pingone_environment_name="${_branch}"
@@ -75,7 +93,9 @@ jobs:
           -backend-config="key=${_stateKey}"
         echo "***Running terraform validate***"
         terraform -chdir="${_tfdir}" validate
-        
+      env:
+        PING_EXPORT_TFVARS_B64: ${{ secrets[env.PING_EXPORT_SECRET_NAME] }}
+
   deploy:
     if: ${{ !contains(github.event.head_commit.message || '', '[skip ci]') && github.ref_type == 'branch' }}
     name: Deploy
@@ -91,12 +111,30 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
     - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+    - name: Select branch tfvars secret
+      run: |-
+        _branch=$(echo "${GITHUB_REF}" | sed -e "s#refs/heads/##g")
+        _suffix=$(printf '%s' "${_branch}" | tr '[:lower:]/.-' '[:upper:]___')
+        case "${_suffix}" in
+          *[!A-Za-z0-9_]*|[0-9]*)
+            echo "ERROR: cannot derive a valid secret name from branch: ${_branch}"
+            exit 1
+            ;;
+        esac
+        echo "PING_EXPORT_SECRET_NAME=PING_EXPORT_TFVARS_${_suffix}" >> "${GITHUB_ENV}"
     - run: |-
         umask 077
         _secrets_file=$(mktemp)
-        trap 'rm -f "${_secrets_file}"' EXIT
+        _tfvars_file=$(mktemp)
+        trap 'rm -f "${_secrets_file}" "${_tfvars_file}"' EXIT
         printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
         . "${_secrets_file}"
+        [ -n "${PING_EXPORT_TFVARS_B64-}" ] || {
+          echo "ERROR: secret ${PING_EXPORT_SECRET_NAME} is not set; run ./scripts/upload_ping_export_tfvars.sh" >&2
+          exit 1
+        }
+        printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > "terraform/ping-export-terraform.auto.tfvars"
+        unset PING_EXPORT_TFVARS_B64
         _tfdir=terraform
         _branch=$(echo "${GITHUB_REF}" | sed -e "s#refs/heads/##g")
         export TF_VAR_pingone_environment_name="${_branch}"
@@ -117,3 +155,5 @@ jobs:
           -backend-config="key=${_stateKey}"
         echo "***Running terraform apply***"
         terraform -chdir="${_tfdir}" apply --auto-approve -input=false
+      env:
+        PING_EXPORT_TFVARS_B64: ${{ secrets[env.PING_EXPORT_SECRET_NAME] }}

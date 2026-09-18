@@ -13,16 +13,7 @@ variable "pingone_client_id" {
 variable "pingone_client_secret" {
   type = string
 }
-variable "pingone_davinci_admin_username" {
-  type = string
-}
-variable "pingone_davinci_admin_password" {
-  type = string
-}
 variable "pingone_davinci_admin_environment_id" {
-  type = string
-}
-variable "pingone_davinci_admin_region" {
   type = string
 }
 variable "pingone_davinci_terraform_group_id" {

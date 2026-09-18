@@ -1,31 +1,9 @@
 # This file is maintained automatically by "terraform init".
 # Manual edits may be lost in future updates.
 
-provider "registry.terraform.io/pingidentity/davinci" {
-  version     = "0.6.0"
-  constraints = "~> 0.4"
-  hashes = [
-    "h1:Jp4RkhfJYJ2H2vc2APA/JF0GGGGtWo31+vLk9JF7qc4=",
-    "zh:1e94cccb41a07cfa06c9f48511c595140fc74acc84d9c5c191545040622d0199",
-    "zh:2489a8db18c2c2942cd565d4e77e63ae4ec00009db47a13383eb907fee885e11",
-    "zh:26e0aa4f00fe89ec58c6893b9af886d97d3ba31537fb0ed9a1f84117033fd42a",
-    "zh:3b4a151c30949e5b4a6f603f29141e6ebe2b7b3e6935d8f77586de5704be2b8e",
-    "zh:6e73c6b3127d9a30ebd1330c4f1aab6311d28ffb4d62eb3636016867a3cd4098",
-    "zh:745481ee2dd9ae6f484fa3f987edce0859a25317043f88a572cda9c55b852280",
-    "zh:890df766e9b839623b1f0437355032a3c006226a6c200cd911e15ee1a9014e9f",
-    "zh:b019285c8a17bdfc9a9b531e4792ab25f696a22a02ccd2046bb4e71c84af7d97",
-    "zh:d028568137d97fc1b4807068a58a45ea8f4e233dbf882d7cfed35ff14f42f834",
-    "zh:d22829fa44cc3461828e986989555c47e7baf48c4c0db82fa1089de01d26c6f4",
-    "zh:e5a7be7d714891d6c7c245bf5ca7b5ca1392b24d63e5d0f75b90409301d2f0b1",
-    "zh:ea770d8be17a9721d828e9ffaf1540a3c476e36e0404511994881d03bcfc0a27",
-    "zh:eaea95089b4914c601108dde5dc1967e59beb3fe2660f969332890425b518d04",
-    "zh:ec61b540e5938c32f604750270487df06c5b8eff675c2b58f4db7308b6a8edf7",
-  ]
-}
-
 provider "registry.terraform.io/pingidentity/pingone" {
   version     = "1.21.0"
-  constraints = ">= 1.1.1, < 2.0.0"
+  constraints = ">= 1.19.1, < 2.0.0"
   hashes = [
     "h1:W2AkEymWjMmzc0wDvVXjZWsMObaEGK6doSXJ09Hj/v8=",
     "zh:042f33e16e401ec559f0164b6d906714c576c1eae2f11f863870ed4c38246c67",

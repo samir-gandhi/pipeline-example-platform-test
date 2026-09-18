@@ -3,9 +3,11 @@ terraform.tfvars
 *.local
 localvars*
 localsecret*
+pingcli-localsecrets
+pingcli-local*
 glitchenv*
 generated
-imports.tf
+*imports.tf
 generated-platform.tf
 
 # Local .terraform directories

@@ -1,5 +1,4 @@
 # Baseline environment configuration.
-# Baseline environment configuration.
 resource "pingone_environment" "target_environment" {
   name        = var.pingone_environment_name
   description = "PingOne CICD demo provisioned by Terraform"
@@ -106,7 +105,7 @@ resource "pingone_resource_scope" "revoke" {
 resource "pingone_resource_scope" "promotion_cycle_test" {
   environment_id = pingone_environment.target_environment.id
   resource_id    = pingone_resource.oidc_sdk.id
-  name           = "promotion-cycle-test"
+  name           = "promotion-cycle-test-CHANGED"
 }
 ##############################################
 # PingOne Custom Resources
