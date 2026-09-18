@@ -91,7 +91,7 @@ if grep -q 'clientSecret[[:space:]]*=[[:space:]]*""' "${_tfvars_file}"; then
   printf '%s\n' "Warning: davinci_connection_PingOne_clientSecret is empty in ${_tfvars_file}." >&2
 fi
 
-_tfvars_b64="$(/usr/bin/base64 -i "${_tfvars_file}")"
+_tfvars_b64="$(/usr/bin/base64 -i "${_tfvars_file}" | tr -d '\n')"
 
 _secret_body="export PING_EXPORT_TFVARS_B64='${_tfvars_b64}'"
 
