@@ -76,6 +76,12 @@ Note: SSH remotes resolve to the wrong GitHub account on this machine. Push over
   (`name`, `description`, `default` top-level, `preferredLanguage`). Wrong shape
   silently flips `default` to false, then plan shows re-add.
 - Enabled agreements cannot be deleted; disable via PUT first.
+- The PingOne provider refuses to delete a DaVinci flow still referenced by an
+  application flow policy (`CONSTRAINT_VIOLATION`). When swapping flows, first
+  target-apply the flow policy so it rebinds to the new flow, then apply the
+  full plan to delete the old flow. Each branch env has its own state file
+  (`platform-state/dev/<branch>/terraform.tfstate`) — fixes must be applied
+  per-environment state, not just once.
 - Terraform plan models population drift as delete+recreate (`1 to add`).
 - `pingone_environment_id` export var comes from `terraform/ping-export-terraform.auto.tfvars`
   (gitignored, per-branch GH secret). CI needs `PING_EXPORT_TFVARS_<BRANCH>` uploaded via
