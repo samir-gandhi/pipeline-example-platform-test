@@ -1,12 +1,12 @@
 ##########################################################################
 # application.tf - DaVinci application, flow policy, deploy and enable.
 # Adapted from pingidentity/ping-integration-example-packages
-# (davinci_api-reg-authn-pkg).
+# (davinci_widget-reg-authn-pkg).
 ##########################################################################
 
 resource "pingone_davinci_application" "registration_flow_app" {
   environment_id = var.environment_id
-  name           = "DaVinci API Registration Sample Application"
+  name           = "DaVinci Registration Sample Application"
 
   api_key = {
     enabled = true
@@ -24,29 +24,29 @@ resource "pingone_davinci_application" "registration_flow_app" {
 resource "pingone_davinci_application_flow_policy" "registration_flow_app_policy" {
   environment_id         = var.environment_id
   davinci_application_id = pingone_davinci_application.registration_flow_app.id
-  name                   = "DaVinci API Registration Sample Policy"
+  name                   = "DaVinci Registration Sample Policy"
   status                 = "enabled"
 
   flow_distributions = [
     {
-      id      = pingone_davinci_flow.pingone_davinci_api_registration_example.id
+      id      = pingone_davinci_flow.pingone_davinci_registration_example.id
       version = -1
       weight  = 100
     }
   ]
 }
 
-resource "pingone_davinci_flow_deploy" "pingone_davinci_api_registration_example" {
+resource "pingone_davinci_flow_deploy" "pingone_davinci_registration_example" {
   environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.pingone_davinci_api_registration_example.id
+  flow_id        = pingone_davinci_flow.pingone_davinci_registration_example.id
 
   deploy_trigger_values = {
-    deployed_version = pingone_davinci_flow.pingone_davinci_api_registration_example.current_version
+    deployed_version = pingone_davinci_flow.pingone_davinci_registration_example.current_version
   }
 }
 
-resource "pingone_davinci_flow_enable" "pingone_davinci_api_registration_example" {
+resource "pingone_davinci_flow_enable" "pingone_davinci_registration_example" {
   environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.pingone_davinci_api_registration_example.id
+  flow_id        = pingone_davinci_flow.pingone_davinci_registration_example.id
   enabled        = true
 }

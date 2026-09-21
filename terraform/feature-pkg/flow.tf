@@ -5,11 +5,11 @@
 # {@link https://docs.pingidentity.com/davinci/flows/davinci_flows.html}
 ##########################################################################
 
-resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
+resource "pingone_davinci_flow" "pingone_davinci_registration_example" {
   environment_id = var.environment_id
-  name           = "PingOne DaVinci API Registration Example"
-  description    = "API Registration authentication flow promoted through the pipeline"
-  color          = "#CACED3"
+  name           = "PingOne DaVinci Registration Example"
+  description    = "Imported on Tue May 16 2023 19:35:07 GMT+0000 (Coordinated Universal Time)"
+  color          = "#AFD5FF"
 
   settings = {
     csp                              = "worker-src 'self' blob:; script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com https://devsdk.singularkey.com http://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval';"
@@ -24,6 +24,129 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
     })
     elements = {
       nodes = {
+        "0di26c5iy7" = {
+          data = {
+            id              = "0di26c5iy7"
+            node_type       = "CONNECTION"
+            connection_id   = var.http_connector_id
+            connector_id    = "httpConnector"
+            name            = "Http"
+            label           = "Http"
+            capability_name = "customHTMLTemplate"
+            type            = "trigger"
+            status          = "configured"
+            properties = jsonencode({
+              "customHTML" : {
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\u003cform id=\\\"registerForm\\\"\u003e\\n    \u003cp\u003eWe did not locate that account. Sign up now!\u003c/p\u003e\\n    \u003cinput type=\\\"text\\\" id=\\\"email\\\" placeholder=\\\"Email address\\\" /\u003e\\n    \u003cinput type=\\\"password\\\" id=\\\"password\\\" placeholder=\\\"password\\\" /\u003e\\n    \u003cbutton class=\\\"btn\\\" data-skcomponent=\\\"skbutton\\\" data-skbuttontype=\\\"form-submit\\\" data-skform=\\\"registerForm\\\" data-skbuttonvalue=\\\"submit\\\"\u003eRegister\u003c/button\u003e\\n\u003c/form\u003e\"\n      }\n    ]\n  }\n]"
+              },
+              "formFieldsList" : {
+                "value" : [
+                  {
+                    "displayName" : "Email",
+                    "hashedVisibility" : false,
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "email",
+                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.cfpq1xg2dc.payload.output.email}}\",\n        \"tooltip\": \"{{local.cfpq1xg2dc.payload.output.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                  },
+                  {
+                    "displayName" : "Password",
+                    "hashedVisibility" : true,
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "password",
+                    "value" : ""
+                  },
+                  {
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "buttonValue"
+                  }
+                ]
+              },
+              "nodeTitle" : {
+                "value" : "Register New Email Form"
+              },
+              "validationRules" : {
+                "value" : [
+                  {
+                    "propertyName" : "email",
+                    "rules" : [
+                      {
+                        "message" : "Must be a valid email address",
+                        "ruleName" : "email"
+                      }
+                    ]
+                  },
+                  {
+                    "propertyName" : "password",
+                    "rules" : [
+                      {
+                        "message" : "Must contain 8 or more characters that are of at least one number, and one uppercase, one lowercase letter, and one or more of the following special characters @$!.,%*?\u0026.",
+                        "pattern" : "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!.,%*?\u0026])[A-Za-z\\d@$!.,%*?\u0026]{8,}$",
+                        "ruleName" : "format"
+                      }
+                    ]
+                  }
+                ]
+              }
+            })
+          }
+          position = {
+            x = 847
+            y = 386
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
+        "64the1zf75" = {
+          data = {
+            id              = "64the1zf75"
+            node_type       = "CONNECTION"
+            connection_id   = var.http_connector_id
+            connector_id    = "httpConnector"
+            name            = "Http"
+            label           = "Http"
+            capability_name = "createSuccessResponse"
+            type            = "action"
+            status          = "configured"
+            properties = jsonencode({
+              "claimsNameValuePairs" : {
+                "value" : [
+                  {
+                    "key" : 0.15658883947546076,
+                    "label" : "loggedInUser (string - flowInstance)",
+                    "name" : "loggedInUser",
+                    "nameDefault" : "email",
+                    "type" : "string",
+                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.m4sfmek769.payload.output.matchedUser.email}}\",\n        \"tooltip\": \"{{local.m4sfmek769.payload.output.matchedUser.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                  }
+                ]
+              },
+              "nodeTitle" : {
+                "value" : "Successfully Completed Login"
+              }
+            })
+          }
+          position = {
+            x = 1417
+            y = 236
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
         "6i7lwwrw94" = {
           data = {
             id              = "6i7lwwrw94"
@@ -40,22 +163,70 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
                 "value" : []
               },
               "email" : {
-                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"auth.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{global.parameters.email}}\",\n        \"tooltip\": \"{{global.parameters.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.0di26c5iy7.payload.output.email}}\",\n        \"tooltip\": \"{{local.0di26c5iy7.payload.output.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
               },
               "passwordForCreateUser" : {
-                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"auth.svg\",\n        \"url\": \"password\",\n        \"data\": \"{{global.parameters.password}}\",\n        \"tooltip\": \"{{global.parameters.password}}\",\n        \"children\": [\n          {\n            \"text\": \"password\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"password\",\n        \"data\": \"{{local.0di26c5iy7.payload.output.password}}\",\n        \"tooltip\": \"{{local.0di26c5iy7.payload.output.password}}\",\n        \"children\": [\n          {\n            \"text\": \"password\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
               },
               "population" : {
                 "value" : "useDefaultPopulation"
               },
               "username" : {
-                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"auth.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{global.parameters.email}}\",\n        \"tooltip\": \"{{global.parameters.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.0di26c5iy7.payload.output.email}}\",\n        \"tooltip\": \"{{local.0di26c5iy7.payload.output.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
               }
             })
           }
           position = {
-            x = 667
-            y = 472
+            x = 1117
+            y = 386
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
+        "7imwg8c7j4" = {
+          data = {
+            id              = "7imwg8c7j4"
+            node_type       = "CONNECTION"
+            connection_id   = var.http_connector_id
+            connector_id    = "httpConnector"
+            name            = "Http"
+            label           = "Http"
+            capability_name = "customHTMLTemplate"
+            type            = "trigger"
+            status          = "configured"
+            properties = jsonencode({
+              "claimsNameValuePairs" : {
+                "value" : [
+                  {
+                    "key" : 0.4322985925683791,
+                    "label" : "userRegistered (boolean - flowInstance)",
+                    "name" : "userRegistered",
+                    "nameDefault" : "email",
+                    "type" : "boolean",
+                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"true\"\n      }\n    ]\n  }\n]"
+                  }
+                ]
+              },
+              "customHTML" : {
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\u003ch2\u003eThank you for registering!\u003c/h2\u003e\\n\u003cbutton class=\\\"btn\\\" id=\\\"login\\\"\u003eLogin\u003c/button\u003e\"\n      }\n    ]\n  }\n]"
+              },
+              "customScript" : {
+                "value" : "(() =\u003e {\n    document.getElementById('login').addEventListener('click', () =\u003e window.location.reload());\n})();"
+              },
+              "nodeTitle" : {
+                "value" : "Successfully Completed Registration"
+              }
+            })
+          }
+          position = {
+            x = 1417
+            y = 386
           }
           group      = "nodes"
           removed    = false
@@ -70,18 +241,10 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           data = {
             id        = "8uo3defwup"
             node_type = "EVAL"
-            properties = jsonencode({
-              "jpeg607lcn" : {
-                "value" : "allTriggersFalse"
-              },
-              "kc7wrmpc93" : {
-                "value" : "allTriggersTrue"
-              }
-            })
           }
           position = {
-            x = 787
-            y = 322
+            x = 1237
+            y = 236
           }
           group      = "nodes"
           removed    = false
@@ -92,41 +255,159 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           pannable   = false
           classes    = ""
         }
-        "c9u3f1nyw7" = {
+        "auhsovpoa8" = {
           data = {
-            id              = "c9u3f1nyw7"
+            id        = "auhsovpoa8"
+            node_type = "EVAL"
+            label     = "Evaluator"
+          }
+          position = {
+            x = 967
+            y = 386
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
+        "cfpq1xg2dc" = {
+          data = {
+            id              = "cfpq1xg2dc"
             node_type       = "CONNECTION"
             connection_id   = var.http_connector_id
             connector_id    = "httpConnector"
             name            = "Http"
             label           = "Http"
-            capability_name = "createSuccessResponse"
-            type            = "action"
+            capability_name = "customHTMLTemplate"
+            type            = "trigger"
             status          = "configured"
             properties = jsonencode({
-              "claimsNameValuePairs" : {
+              "customHTML" : {
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\u003cform id=\\\"emailForm\\\"\u003e\\n    \u003cinput type=\\\"text\\\" id=\\\"email\\\" name=\\\"email\\\" placeholder=\\\"Email Address\\\" /\u003e\\n    \u003cdiv data-skcomponent=\\\"skerrormessage\\\" class=\\\"input-error-msg text-danger\\\" data-skerrorid=\\\"email\\\"\u003e\u003c/div\u003e\\n    \u003cbutton class=\\\"btn\\\" data-skcomponent=\\\"skbutton\\\" data-skbuttontype=\\\"form-submit\\\" data-skform=\\\"emailForm\\\" data-skbuttonvalue=\\\"submit\\\"\u003eSubmit\u003c/button\u003e\\n\u003cform\u003e\"\n      }\n    ]\n  }\n]"
+              },
+              "formFieldsList" : {
                 "value" : [
                   {
-                    "key" : 0.3076393052734512,
-                    "name" : null,
-                    "nameDefault" : "success",
-                    "type" : "string",
-                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"success\",\n        \"data\": \"{{local.6i7lwwrw94.payload.success}}\",\n        \"tooltip\": \"{{local.6i7lwwrw94.payload.success}}\",\n        \"children\": [\n          {\n            \"text\": \"success\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                    "displayName" : "Email",
+                    "hashedVisibility" : false,
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "email",
+                    "value" : ""
                   },
                   {
-                    "key" : 0.08566196004820625,
-                    "name" : null,
-                    "nameDefault" : "createdAt",
-                    "type" : "string",
-                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"createdAt\",\n        \"data\": \"{{local.6i7lwwrw94.payload.output.user.createdAt}}\",\n        \"tooltip\": \"{{local.6i7lwwrw94.payload.output.user.createdAt}}\",\n        \"children\": [\n          {\n            \"text\": \"createdAt\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                    "hashedVisibility" : false,
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "buttonValue",
+                    "value" : ""
+                  }
+                ]
+              },
+              "validationRules" : {
+                "value" : [
+                  {
+                    "propertyName" : "email",
+                    "rules" : [
+                      {
+                        "message" : "Must be a valid email address",
+                        "ruleName" : "email"
+                      }
+                    ]
                   }
                 ]
               }
             })
           }
           position = {
-            x = 1050
-            y = 476
+            x = 277
+            y = 236
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
+        "eg2kadjdo1" = {
+          data = {
+            id              = "eg2kadjdo1"
+            node_type       = "CONNECTION"
+            connection_id   = var.http_connector_id
+            connector_id    = "httpConnector"
+            name            = "Http"
+            label           = "Http"
+            capability_name = "customHTMLTemplate"
+            type            = "trigger"
+            status          = "configured"
+            properties = jsonencode({
+              "customHTML" : {
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\u003cform id=\\\"loginForm\\\"\u003e\"\n      }\n    ]\n  },\n  {\n    \"children\": [\n      {\n        \"text\": \"\\t\u003cdiv data-skcomponent=\\\"skerror\\\" style=\\\"color: red; padding-bottom: 1rem; text-align: center;\\\" class=\\\"feedback feedback--error sk-alert sk-alert-danger has-text-danger has-background-danger-light text-danger text-center pb-3\\\" data-id=\\\"feedback\\\" data-skvisibility=\\\"\\\"\u003e\u003c/div\u003e\\n    \u003cinput type=\\\"password\\\" id=\\\"password\\\" placeholder=\\\"password\\\" /\u003e\\n    \u003cbutton class=\\\"btn\\\" data-skcomponent=\\\"skbutton\\\" data-skbuttontype=\\\"form-submit\\\" data-skform=\\\"loginForm\\\" data-skbuttonvalue=\\\"submit\\\"\u003eLogin\u003c/button\u003e\\n\u003c/form\u003e\"\n      }\n    ]\n  }\n]"
+              },
+              "formFieldsList" : {
+                "value" : [
+                  {
+                    "displayName" : "Password",
+                    "hashedVisibility" : true,
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "password",
+                    "value" : ""
+                  },
+                  {
+                    "preferredControlType" : "textField",
+                    "preferredDataType" : "string",
+                    "propertyName" : "buttonValue"
+                  }
+                ]
+              },
+              "nodeTitle" : {
+                "value" : "Enter Password Form"
+              },
+              "validationRules" : {
+                "value" : [
+                  {
+                    "propertyName" : "password",
+                    "rules" : [
+                      {
+                        "message" : "Must contain 8 or more characters that are of at least one number, and one uppercase, one lowercase letter, and one or more of the following special characters @$!.,%*?\u0026.",
+                        "pattern" : "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!.,%*?\u0026])[A-Za-z\\d@$!.,%*?\u0026]{8,}$",
+                        "ruleName" : "format"
+                      }
+                    ]
+                  }
+                ]
+              }
+            })
+          }
+          position = {
+            x = 847
+            y = 236
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
+        "fyg4fdn344" = {
+          data = {
+            id        = "fyg4fdn344"
+            node_type = "EVAL"
+          }
+          position = {
+            x = 397
+            y = 236
           }
           group      = "nodes"
           removed    = false
@@ -142,135 +423,10 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
             id        = "hcmfduc8d9"
             node_type = "EVAL"
             label     = "Evaluator"
-            properties = jsonencode({
-              "kc7wrmpc93" : {
-                "value" : "allTriggersFalse"
-              }
-            })
           }
           position = {
-            x = 787
-            y = 472
-          }
-          group      = "nodes"
-          removed    = false
-          selected   = false
-          selectable = true
-          locked     = false
-          grabbable  = true
-          pannable   = false
-          classes    = ""
-        }
-        "jpeg607lcn" = {
-          data = {
-            id              = "jpeg607lcn"
-            node_type       = "CONNECTION"
-            connection_id   = var.http_connector_id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createErrorResponse"
-            type            = "action"
-            status          = "configured"
-            properties = jsonencode({
-              "backgroundColor" : {
-                "value" : "#d0021bff"
-              },
-              "claimsNameValuePairs" : {
-                "value" : [
-                  {
-                    "key" : 0.5898678839936096,
-                    "name" : null,
-                    "nameDefault" : "message",
-                    "type" : "string",
-                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"message\",\n        \"data\": \"{{local.p53gq7n410.payload.error.message}}\",\n        \"tooltip\": \"{{local.p53gq7n410.payload.error.message}}\",\n        \"children\": [\n          {\n            \"text\": \"message\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
-                  }
-                ]
-              }
-            })
-          }
-          position = {
-            x = 1050
-            y = 356
-          }
-          group      = "nodes"
-          removed    = false
-          selected   = false
-          selectable = true
-          locked     = false
-          grabbable  = true
-          pannable   = false
-          classes    = ""
-        }
-        "k2eziu1puq" = {
-          data = {
-            id              = "k2eziu1puq"
-            node_type       = "CONNECTION"
-            connection_id   = var.http_connector_id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createSuccessResponse"
-            type            = "action"
-            status          = "configured"
-            properties = jsonencode({
-              "claimsNameValuePairs" : {
-                "value" : [
-                  {
-                    "key" : 0.7708072563929735,
-                    "name" : null,
-                    "nameDefault" : "success",
-                    "type" : "string",
-                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"success\",\n        \"data\": \"{{local.p53gq7n410.payload.success}}\",\n        \"tooltip\": \"{{local.p53gq7n410.payload.success}}\",\n        \"children\": [\n          {\n            \"text\": \"success\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
-                  }
-                ]
-              }
-            })
-          }
-          position = {
-            x = 1050
-            y = 236
-          }
-          group      = "nodes"
-          removed    = false
-          selected   = false
-          selectable = true
-          locked     = false
-          grabbable  = true
-          pannable   = false
-          classes    = ""
-        }
-        "kc7wrmpc93" = {
-          data = {
-            id              = "kc7wrmpc93"
-            node_type       = "CONNECTION"
-            connection_id   = var.http_connector_id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createErrorResponse"
-            type            = "action"
-            status          = "configured"
-            properties = jsonencode({
-              "backgroundColor" : {
-                "value" : "#d0021bff"
-              },
-              "claimsNameValuePairs" : {
-                "value" : [
-                  {
-                    "key" : 0.578323540163898,
-                    "name" : null,
-                    "nameDefault" : "message",
-                    "type" : "string",
-                    "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"message\",\n        \"data\": \"{{local.6i7lwwrw94.payload.error.message}}\",\n        \"tooltip\": \"{{local.6i7lwwrw94.payload.error.message}}\",\n        \"children\": [\n          {\n            \"text\": \"message\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
-                  }
-                ]
-              }
-            })
-          }
-          position = {
-            x = 1050
-            y = 596
+            x = 1237
+            y = 386
           }
           group      = "nodes"
           removed    = false
@@ -299,13 +455,13 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
                 ]
               },
               "userIdentifierForFindUser" : {
-                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"auth.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{global.parameters.email}}\",\n        \"tooltip\": \"{{global.parameters.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.cfpq1xg2dc.payload.output.email}}\",\n        \"tooltip\": \"{{local.cfpq1xg2dc.payload.output.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
               }
             })
           }
           position = {
-            x = 277
-            y = 322
+            x = 547
+            y = 236
           }
           group      = "nodes"
           removed    = false
@@ -329,19 +485,38 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
             status          = "configured"
             properties = jsonencode({
               "identifier" : {
-                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"auth.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{global.parameters.email}}\",\n        \"tooltip\": \"{{global.parameters.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.cfpq1xg2dc.payload.output.email}}\",\n        \"tooltip\": \"{{local.cfpq1xg2dc.payload.output.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
               },
               "matchAttribute" : {
                 "value" : "email"
               },
               "password" : {
-                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"auth.svg\",\n        \"url\": \"password\",\n        \"data\": \"{{global.parameters.password}}\",\n        \"tooltip\": \"{{global.parameters.password}}\",\n        \"children\": [\n          {\n            \"text\": \"password\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
+                "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"password\",\n        \"data\": \"{{local.eg2kadjdo1.payload.output.password}}\",\n        \"tooltip\": \"{{local.eg2kadjdo1.payload.output.password}}\",\n        \"children\": [\n          {\n            \"text\": \"password\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
               }
             })
           }
           position = {
-            x = 667
-            y = 322
+            x = 1117
+            y = 236
+          }
+          group      = "nodes"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = false
+          classes    = ""
+        }
+        "tx0qrifdc8" = {
+          data = {
+            id        = "tx0qrifdc8"
+            node_type = "EVAL"
+            label     = "Evaluator"
+          }
+          position = {
+            x = 966.5
+            y = 236.75
           }
           group      = "nodes"
           removed    = false
@@ -360,15 +535,12 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
             properties = jsonencode({
               "0di26c5iy7" : {
                 "value" : "anyTriggersFalse"
-              },
-              "6i7lwwrw94" : {
-                "value" : "allTriggersFalse"
               }
             })
           }
           position = {
-            x = 427
-            y = 322
+            x = 667
+            y = 236
           }
           group      = "nodes"
           removed    = false
@@ -381,11 +553,49 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
         }
       }
       edges = {
-        "3uq6a5770u" = {
+        "2jkvc6rbx3" = {
           data = {
-            id     = "3uq6a5770u"
+            id     = "2jkvc6rbx3"
             source = "hcmfduc8d9"
-            target = "c9u3f1nyw7"
+            target = "7imwg8c7j4"
+          }
+          position = {
+            x = 0
+            y = 0
+          }
+          group      = "edges"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = true
+          classes    = ""
+        }
+        "56je658g3m" = {
+          data = {
+            id     = "56je658g3m"
+            source = "tx0qrifdc8"
+            target = "p53gq7n410"
+          }
+          position = {
+            x = 0
+            y = 0
+          }
+          group      = "edges"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = true
+          classes    = ""
+        }
+        "63jzayvdql" = {
+          data = {
+            id     = "63jzayvdql"
+            source = "auhsovpoa8"
+            target = "6i7lwwrw94"
           }
           position = {
             x = 0
@@ -419,11 +629,49 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           pannable   = true
           classes    = ""
         }
+        "7xh26arsu2" = {
+          data = {
+            id     = "7xh26arsu2"
+            source = "yqi3iaujxx"
+            target = "0di26c5iy7"
+          }
+          position = {
+            x = 0
+            y = 0
+          }
+          group      = "edges"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = true
+          classes    = ""
+        }
         "8xta8bc53k" = {
           data = {
             id     = "8xta8bc53k"
             source = "p53gq7n410"
             target = "8uo3defwup"
+          }
+          position = {
+            x = 0
+            y = 0
+          }
+          group      = "edges"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = true
+          classes    = ""
+        }
+        "a30k2zzp2s" = {
+          data = {
+            id     = "a30k2zzp2s"
+            source = "yqi3iaujxx"
+            target = "eg2kadjdo1"
           }
           position = {
             x = 0
@@ -457,11 +705,11 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           pannable   = true
           classes    = ""
         }
-        "cygeg7p11i" = {
+        "dlgb6bc47d" = {
           data = {
-            id     = "cygeg7p11i"
-            source = "yqi3iaujxx"
-            target = "p53gq7n410"
+            id     = "dlgb6bc47d"
+            source = "fyg4fdn344"
+            target = "m4sfmek769"
           }
           position = {
             x = 0
@@ -476,11 +724,30 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           pannable   = true
           classes    = ""
         }
-        "p4nmcet6qn" = {
+        "l69t6tv4wc" = {
           data = {
-            id     = "p4nmcet6qn"
+            id     = "l69t6tv4wc"
+            source = "cfpq1xg2dc"
+            target = "fyg4fdn344"
+          }
+          position = {
+            x = 0
+            y = 0
+          }
+          group      = "edges"
+          removed    = false
+          selected   = false
+          selectable = true
+          locked     = false
+          grabbable  = true
+          pannable   = true
+          classes    = ""
+        }
+        "p071062a0c" = {
+          data = {
+            id     = "p071062a0c"
             source = "8uo3defwup"
-            target = "k2eziu1puq"
+            target = "64the1zf75"
           }
           position = {
             x = 0
@@ -495,11 +762,11 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           pannable   = true
           classes    = ""
         }
-        "poco6s1p07" = {
+        "qsnral171j" = {
           data = {
-            id     = "poco6s1p07"
-            source = "yqi3iaujxx"
-            target = "6i7lwwrw94"
+            id     = "qsnral171j"
+            source = "eg2kadjdo1"
+            target = "tx0qrifdc8"
           }
           position = {
             x = 0
@@ -514,30 +781,11 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
           pannable   = true
           classes    = ""
         }
-        "wf1i9gpmx1" = {
+        "xj61qimmey" = {
           data = {
-            id     = "wf1i9gpmx1"
-            source = "hcmfduc8d9"
-            target = "kc7wrmpc93"
-          }
-          position = {
-            x = 0
-            y = 0
-          }
-          group      = "edges"
-          removed    = false
-          selected   = false
-          selectable = true
-          locked     = false
-          grabbable  = true
-          pannable   = true
-          classes    = ""
-        }
-        "z2bqgf35gv" = {
-          data = {
-            id     = "z2bqgf35gv"
-            source = "8uo3defwup"
-            target = "jpeg607lcn"
+            id     = "xj61qimmey"
+            source = "0di26c5iy7"
+            target = "auhsovpoa8"
           }
           position = {
             x = 0
@@ -567,23 +815,4 @@ resource "pingone_davinci_flow" "pingone_davinci_api_registration_example" {
       y = 0
     }
   }
-
-  input_schema = [
-    {
-      property_name          = "email"
-      preferred_data_type    = "string"
-      preferred_control_type = "textField"
-      required               = true
-      is_expanded            = true
-      description            = ""
-    },
-    {
-      property_name          = "password"
-      preferred_data_type    = "string"
-      preferred_control_type = "textField"
-      required               = true
-      is_expanded            = true
-      description            = ""
-    }
-  ]
 }
