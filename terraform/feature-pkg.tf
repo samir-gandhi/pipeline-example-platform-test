@@ -13,7 +13,7 @@ module "feature-pkg" {
   # Root-managed resources reused by the package.
   oidc_sdk_resource_id = pingone_resource.oidc_sdk.id
   revoke_scope_id      = pingone_resource_scope.revoke.id
-  dv_flow_policy_id    = module.ping-export.flow_policy_ids.main
+  dv_flow_policy_id    = module.ping-export.pingone_davinci_application_flow_policy__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Policy__id
   dv_api_key           = module.ping-export.davinci_application_api_key
   openid_scope_ids = [
     pingone_resource_scope_openid.profile_scope.id,
