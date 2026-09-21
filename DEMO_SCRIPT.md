@@ -142,11 +142,11 @@ flow, policy, connectors, notifications all restored from Git.
 
 ---
 
-## Phase 4 — New feature + export (UC 3 + export capability)
+## Phase 5 — New feature + export (UC 3 + export capability)
 
 ```sh
 # 1. Create the feature branch (GitHub Issue -> Create a branch, or locally):
-git checkout prod && git pull && git checkout -b 12-add-protect-flow-enhancement && git push -u origin demo-prep 2>/dev/null; git push -u origin 12-protect-flow-enhancement
+git checkout prod && git pull && git checkout -b 12-protect-flow-enhancement && git push -u origin 12-protect-flow-enhancement
 # -> push.yml deploys a new PingOne environment named after the branch
 
 # 2. Build a change in the new env's DaVinci console (e.g. tweak a node or title).
@@ -160,7 +160,7 @@ terraform -chdir=terraform plan -input=false -detailed-exitcode   # plan shows t
 ./scripts/upload_ping_export_tfvars.sh
 
 # 5. Commit, push, open PR to qa: plan job shows the diff as review artifact.
-git checkout -b demo/prep && git add terraform/ && git commit -m "Export <feature> from console" && git push
+git add terraform/ && git commit -m "Export <feature> from console" && git push origin 12-protect-flow-enhancement
 gh pr create --base qa --head <branch> --title "Feature: ..." --fill
 # merge PR -> qa deploy; then PR qa -> prod for promotion
 ```
@@ -170,7 +170,7 @@ export + apply — deployed resources now match code exactly.
 
 ---
 
-## Phase 5 — Audit trail (UC 6)
+## Phase 6 — Audit trail (UC 6)
 
 ```sh
 sh scripts/demo/audit_report.sh --branch prod --since "1 hour ago" > demo-audit.md
@@ -189,7 +189,7 @@ Then narrate in GitHub UI:
 | Symptom | Fix |
 |---|---|
 | `pingcli not authenticated` | `pingcli pingone auth login` |
-| CI: `base64: invalid input` | re-upload both secrets: `gh secret set --app actions TERRAFORM_ENV_BASE64 --body "$(base64 -i localsecrets \| tr -d '\n')"` and `./scripts/upload_ping_export_tfvars.sh` |
+| CI: `base64: invalid input` | re-upload both secrets: `gh secret set --app actions TERRAFORM_ENV_BASE64 --body "$(base64 -i localsecrets \| tr -d '\n')"` and `./scripts/upload_ping_export_tfvars.sh` (script now uploads raw base64, matching CI) |
 | CI: missing `PING_EXPORT_TFVARS_<BRANCH>` | `./scripts/upload_ping_export_tfvars.sh` from that branch |
 | Flow delete blocked (`CONSTRAINT_VIOLATION`) | rebind flow policy first (`terraform apply -target=...policy...`), then full apply |
 | Agreement won't delete | disable via PUT first, then DELETE |
