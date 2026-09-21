@@ -7,6 +7,9 @@ resource "pingone_environment" "target_environment" {
 
   services = [
     {
+      type = "SSO"
+    },
+    {
       type = "MFA"
     },
     {

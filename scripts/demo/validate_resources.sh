@@ -64,32 +64,39 @@ _agr=$(pingcli pingone api "environments/${_env_id}/agreements" -O json --log-le
 [ "${_agr}" -ge 1 ] 2>/dev/null \
   && _ok "agreement 'Terms of Service' present" || _fail "agreement 'Terms of Service' missing"
 
-# 6. DaVinci Registration flow (widget package) exists, deployed, and enabled.
+# 6. Passwordless main flow exists, deployed, and enabled.
+_MAIN_FLOW="CIAM-Passwordless-Protect-Registration-Authentication-Account-Recovery-Main Flow"
 _flow=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
-  | jq -r '[.data[]? | select(.name == "PingOne DaVinci Registration Example")] | length')
+  | jq -r '[.data[]? | select(.name == "'"${_MAIN_FLOW}"'")] | length')
 [ "${_flow}" -ge 1 ] 2>/dev/null \
-  && _ok "flow 'PingOne DaVinci Registration Example' present" || _fail "Registration flow missing"
+  && _ok "main flow 'Passwordless Registration/Authn/Recovery' present" || _fail "passwordless main flow missing"
 
 _flow_id=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
-  | jq -r '.data[]? | select(.name == "PingOne DaVinci Registration Example") | .id' | head -1)
+  | jq -r '.data[]? | select(.name == "'"${_MAIN_FLOW}"'") | .id' | head -1)
 if [ -n "${_flow_id}" ]; then
   _flow_en=$(pingcli davinci flows get -e "${_env_id}" --flow-id "${_flow_id}" -O json --log-level error 2>/dev/null \
     | jq -r '.data.enabled // false')
   [ "${_flow_en}" = "true" ] \
-    && _ok "Registration flow enabled" || _fail "Registration flow not enabled"
+    && _ok "passwordless main flow enabled" || _fail "passwordless main flow not enabled"
   _flow_ver=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
-    | jq -r '.data[]? | select(.name == "PingOne DaVinci Registration Example") | .currentVersion // empty')
+    | jq -r '.data[]? | select(.name == "'"${_MAIN_FLOW}"'") | .currentVersion // empty')
   [ -n "${_flow_ver}" ] \
-    && _ok "Registration flow deployed (version ${_flow_ver})" || _fail "Registration flow not deployed"
+    && _ok "passwordless main flow deployed (version ${_flow_ver})" || _fail "passwordless main flow not deployed"
 else
-  _fail "Registration flow not deployed (no flow ID)"
+  _fail "passwordless main flow not deployed (no flow ID)"
 fi
+
+# 6b. All 11 passwordless solution flows present.
+_flow_total=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
+  | jq -r '[.data[]? | select(.name | test("CIAM-Passwordless|^OOTB"))] | length')
+[ "${_flow_total}" -ge 11 ] 2>/dev/null \
+  && _ok "all 11 passwordless solution flows present (${_flow_total})" || _fail "expected 11 passwordless flows, found ${_flow_total:-0}"
 
 # 7. DaVinci application with API key enabled exists.
 _app=$(pingcli davinci applications list -e "${_env_id}" -O json --log-level error 2>/dev/null \
-  | jq -r '[.data[]? | select(.name == "DaVinci Registration Sample Application" and .apiKey.enabled == true)] | length')
+  | jq -r '[.data[]? | select(.name == "DaVinci OIDC Passwordless Sample Application" and .apiKey.enabled == true)] | length')
 [ "${_app}" -ge 1 ] 2>/dev/null \
-  && _ok "DaVinci application 'DaVinci Registration Sample Application' enabled" || _fail "DaVinci registration application missing/disabled"
+  && _ok "DaVinci application 'DaVinci OIDC Passwordless Sample Application' enabled" || _fail "passwordless DaVinci application missing/disabled"
 
 # 8. Terraform reports no differences (reconciliation complete) when TF vars available.
 if [ -n "${TF_VAR_pingone_license_id:-}" ] && [ -f terraform/.terraform.lock.hcl ]; then
