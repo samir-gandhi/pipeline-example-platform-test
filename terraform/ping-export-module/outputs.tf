@@ -1,3 +1,8 @@
+output "pingone_davinci_application__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application__api_key__value" {
+  description = "The api_key.value of pingone_davinci_application pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application"
+  value       = pingone_davinci_application.pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application.api_key.value
+}
+
 output "pingone_davinci_application_flow_policy__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Policy__id" {
   description = "The id of pingone_davinci_application_flow_policy pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Policy"
   value       = pingone_davinci_application_flow_policy.pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Policy.id
@@ -43,9 +48,3 @@ output "pingone_davinci_flow__pingcli__PingOne-0020-DaVinci-0020-API-0020-Protec
   value       = pingone_davinci_flow.pingcli__PingOne-0020-DaVinci-0020-API-0020-Protect-0020-Example.id
 }
 
-
-output "davinci_application_api_key" {
-  description = "DaVinci application API key for the sample app"
-  value       = pingone_davinci_application.pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application.api_key.value
-  sensitive   = true
-}
