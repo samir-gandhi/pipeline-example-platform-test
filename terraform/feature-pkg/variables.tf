@@ -7,21 +7,10 @@ variable "environment_id" {
   description = "Target PingOne environment ID created by the pipeline"
 }
 
-variable "feature_pkg_domain_suffix" {
-  type        = string
-  description = "PingOne auth domain suffix for OIDC redirect URIs (e.g. com for NA)"
-  default     = "com"
-}
-
 variable "region_code" {
   type        = string
   description = "PingOne region code for the target environment (NA, EU, CA, AP, AU)"
   default     = "NA"
-}
-
-variable "agreement_id" {
-  type        = string
-  description = "ID of the Terms of Service agreement managed by the root module"
 }
 
 variable "app_url" {
@@ -32,11 +21,6 @@ variable "app_url" {
 
 locals {
   redirect_uris = ["${var.app_url}/dashboard.html"]
-
-  # Risk policy: the environment ships with a Fallback Risk Policy; read its ID
-  # with a worker token for the PingOne Protect variables.
-  access_token = jsondecode(data.http.get_token.response_body).access_token
-  policy_id    = jsondecode(data.http.get_risk_policy_id.response_body)._embedded.riskPolicySets[0].id
 }
 
 variable "openid_scope_ids" {
@@ -64,12 +48,3 @@ variable "http_connector_id" {
   description = "Http connector instance ID from the export module"
 }
 
-variable "annotation_connector_id" {
-  type        = string
-  description = "Annotation connector instance ID from the export module"
-}
-
-variable "error_message_connector_id" {
-  type        = string
-  description = "Error Message connector instance ID from the export module"
-}

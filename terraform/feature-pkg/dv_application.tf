@@ -5,11 +5,17 @@
 # {@link https://docs.pingidentity.com/davinci/applications/davinci_applications.html}
 ##########################################################################
 
-resource "pingone_davinci_application" "passwordless_main_flow_app" {
+resource "pingone_davinci_application" "registration_flow_app" {
   environment_id = var.environment_id
-  name           = "DaVinci OIDC Passwordless Sample Application"
+  name           = "DaVinci API Protect Sample Application"
 
   api_key = {
     enabled = true
+  }
+
+  oauth = {
+    grant_types   = ["authorizationCode"]
+    redirect_uris = local.redirect_uris
+    scopes        = ["openid", "profile"]
   }
 }

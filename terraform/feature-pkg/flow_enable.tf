@@ -5,78 +5,8 @@
 # {@link https://docs.pingidentity.com/davinci/flows/davinci_flows.html}
 ##########################################################################
 
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_account_recovery_subflow" {
+resource "pingone_davinci_flow_enable" "pingone_davinci_api_protect_example" {
   environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_account_recovery_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_account_registration_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_account_registration_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_agreement_tos_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_agreement_tos_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_change_password_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_change_password_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_device_authentication_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_device_authentication_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_device_registration_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_device_registration_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_magic_link_authentication_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_magic_link_authentication_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_registration_authentication_account_recovery_main_flow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_registration_authentication_account_recovery_main_flow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_threat_detection_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_threat_detection_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ciam_passwordless_protect_verify_email_subflow" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ciam_passwordless_protect_verify_email_subflow.id
-  enabled        = true
-}
-
-
-resource "pingone_davinci_flow_enable" "ootb_basic_profile_management" {
-  environment_id = var.environment_id
-  flow_id        = pingone_davinci_flow.ootb_basic_profile_management.id
+  flow_id        = pingone_davinci_flow.pingone_davinci_api_protect_example.id
   enabled        = true
 }

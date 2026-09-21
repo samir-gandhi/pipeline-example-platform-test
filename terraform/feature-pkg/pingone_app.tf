@@ -1,6 +1,6 @@
 ##########################################################################
 # pingone_app.tf - OIDC SDK sample application, auth policy assignment,
-# and resource grants. Adapted from davinci-oidc_sdk-ciam_passwordless_solution-pkg.
+# and resource grants. Adapted from davinci_api-pingone_protect-reg-authn-pkg.
 # Reuses the OIDC SDK custom resource and scopes managed by the root module.
 ##########################################################################
 
@@ -24,11 +24,11 @@ resource "pingone_application" "oidc_sdk_sample_app" {
 resource "pingone_application_flow_policy_assignment" "login_flow" {
   environment_id = var.environment_id
   application_id = pingone_application.oidc_sdk_sample_app.id
-  flow_policy_id = pingone_davinci_application_flow_policy.registration_flow_policy.id
+  flow_policy_id = pingone_davinci_application_flow_policy.registration_flow_app_policy.id
 
   priority = 1
 
-  depends_on = [pingone_davinci_application_flow_policy.registration_flow_policy]
+  depends_on = [pingone_davinci_application_flow_policy.registration_flow_app_policy]
 }
 
 resource "pingone_application_resource_grant" "oidc_sdk_sample_app_openid" {
