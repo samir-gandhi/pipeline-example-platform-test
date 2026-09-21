@@ -64,7 +64,34 @@ _agr=$(pingcli pingone api "environments/${_env_id}/agreements" -O json --log-le
 [ "${_agr}" -ge 1 ] 2>/dev/null \
   && _ok "agreement 'Terms of Service' present" || _fail "agreement 'Terms of Service' missing"
 
-# 6. Terraform reports no differences (reconciliation complete) when TF vars available.
+# 6. DaVinci API Registration flow exists, deployed, and enabled.
+_flow=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
+  | jq -r '[.data[]? | select(.name == "PingOne DaVinci API Registration Example")] | length')
+[ "${_flow}" -ge 1 ] 2>/dev/null \
+  && _ok "DaVinci flow 'PingOne DaVinci API Registration Example' present" || _fail "DaVinci registration flow missing"
+
+_flow_id=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
+  | jq -r '.data[]? | select(.name == "PingOne DaVinci API Registration Example") | .id' | head -1)
+if [ -n "${_flow_id}" ]; then
+  _flow_en=$(pingcli davinci flows get -e "${_env_id}" --flow-id "${_flow_id}" -O json --log-level error 2>/dev/null \
+    | jq -r '.data.enabled // false')
+  [ "${_flow_en}" = "true" ] \
+    && _ok "DaVinci registration flow enabled" || _fail "DaVinci registration flow not enabled"
+  _flow_ver=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error 2>/dev/null \
+    | jq -r '.data[]? | select(.name == "PingOne DaVinci API Registration Example") | .currentVersion // empty')
+  [ -n "${_flow_ver}" ] \
+    && _ok "DaVinci registration flow deployed (version ${_flow_ver})" || _fail "DaVinci registration flow not deployed"
+else
+  _fail "DaVinci registration flow not deployed (no flow ID)"
+fi
+
+# 7. DaVinci application with API key enabled exists.
+_app=$(pingcli davinci applications list -e "${_env_id}" -O json --log-level error 2>/dev/null \
+  | jq -r '[.data[]? | select(.name == "DaVinci API Registration Sample Application" and .apiKey.enabled == true)] | length')
+[ "${_app}" -ge 1 ] 2>/dev/null \
+  && _ok "DaVinci application 'DaVinci API Registration Sample Application' enabled" || _fail "DaVinci registration application missing/disabled"
+
+# 8. Terraform reports no differences (reconciliation complete) when TF vars available.
 if [ -n "${TF_VAR_pingone_license_id:-}" ] && [ -f terraform/.terraform.lock.hcl ]; then
   set +e
   export TF_VAR_pingone_environment_name="${_env}"

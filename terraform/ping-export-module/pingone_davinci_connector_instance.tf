@@ -55,3 +55,12 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne" {
     }
   })
 }
+
+resource "pingone_davinci_connector_instance" "pingcli__Cookie" {
+  environment_id = var.pingone_environment_id
+  name           = "Cookie"
+
+  connector = {
+    id = "cookieConnector"
+  }
+}
