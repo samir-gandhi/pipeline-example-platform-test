@@ -4,6 +4,7 @@
 #
 # Drift types (default: population-rename):
 #   population-rename  Rename the sample population via the management API.
+#   flow-rename        Rename the Protect flow title (demo UC4 story).
 #   delete-connector   Delete the "Cookie" DaVinci connector instance.
 #   delete-agreement   Delete the "Terms of Service" agreement.
 #
@@ -80,8 +81,16 @@ case "${_drift_type}" in
       --http-method DELETE -O json --log-level error >/dev/null
     echo "drift injected: agreement 'Terms of Service' (${_agr_id}) deleted"
     ;;
-  *)
-    echo "unknown drift type: ${_drift_type}" >&2
-    exit 1
+  flow-rename)
+    _flow_id=$(pingcli davinci flows list -e "${_env_id}" -O json --log-level error \
+      --query 'data[].{n:name,i:id}' 2>/dev/null \
+      | jq -r '.[] | select(.n == "PingOne DaVinci API Protect Example") | .i' | head -1)
+    [ -n "${_flow_id}" ] || { echo "Protect flow not found" >&2; exit 1; }
+    pingcli davinci flows replace -e "${_env_id}" \
+      --flow-id "${_flow_id}" \
+      --flow "${_flow_id}" \
+      --body '{"name": "PingOne DaVinci API BADEmail Example"}' \
+      -O json --log-level error >/dev/null
+    echo "drift injected: flow '${_flow_id}' renamed to 'PingOne DaVinci API BADEmail Example'"
     ;;
 esac
