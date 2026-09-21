@@ -88,8 +88,7 @@ case "${_drift_type}" in
     [ -n "${_flow_id}" ] || { echo "Protect flow not found" >&2; exit 1; }
     pingcli davinci flows replace -e "${_env_id}" \
       --flow-id "${_flow_id}" \
-      --flow "${_flow_id}" \
-      --body '{"name": "PingOne DaVinci API BADEmail Example"}' \
+      --name "PingOne DaVinci API BADEmail Example" \
       -O json --log-level error >/dev/null
     echo "drift injected: flow '${_flow_id}' renamed to 'PingOne DaVinci API BADEmail Example'"
     ;;
