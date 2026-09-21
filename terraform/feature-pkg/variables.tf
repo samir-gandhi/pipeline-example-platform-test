@@ -7,12 +7,6 @@ variable "environment_id" {
   description = "Target PingOne environment ID created by the pipeline"
 }
 
-variable "region_code" {
-  type        = string
-  description = "PingOne region code for the target environment (NA, EU, CA, AP, AU)"
-  default     = "NA"
-}
-
 variable "app_url" {
   type        = string
   description = "Sample application URL for OIDC redirects"
@@ -38,13 +32,20 @@ variable "revoke_scope_id" {
   description = "Revoke scope ID on the OIDC SDK resource, managed by the root module"
 }
 
-variable "pingone_connector_id" {
+
+variable "pingone_domain_suffix" {
   type        = string
-  description = "PingOne connector instance ID from the export module"
+  description = "PingOne auth domain suffix (com for NA, eu for EU, ca for CA, asia for AP)"
+  default     = "com"
 }
 
-variable "http_connector_id" {
+variable "dv_flow_policy_id" {
   type        = string
-  description = "Http connector instance ID from the export module"
+  description = "DaVinci application flow policy ID (from the export module)"
 }
 
+variable "dv_api_key" {
+  type        = string
+  description = "DaVinci application API key (from the export module)"
+  sensitive   = true
+}

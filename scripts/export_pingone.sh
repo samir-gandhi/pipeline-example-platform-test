@@ -105,3 +105,73 @@ pingcli-terraformer export \
   --include-values \
   --include-imports \
   --out "${_output_dir}"
+
+# --- Post-export hooks ------------------------------------------------------
+# The exporter rewrites the module directory; hand-maintained additions must be
+# restored afterwards.
+
+# 1. Restore the outputs the export tool does not generate. The feature-pkg
+#    module and demo validation reference these outputs.
+if [ "${_output_dir}" = "terraform" ] && [ -d terraform/ping-export-module ]; then
+  cat > terraform/ping-export-module/outputs.tf <<'OUTTF'
+output "connector_instance_ids" {
+  description = "DaVinci connector instance IDs from the export, keyed by connector id"
+  value = {
+    pingOne      = pingone_davinci_connector_instance.pingcli__PingOne.id
+    Http         = pingone_davinci_connector_instance.pingcli__Http.id
+    Annotation   = pingone_davinci_connector_instance.pingcli__Annotation.id
+    ErrorMessage = pingone_davinci_connector_instance.pingcli__Error-0020-Message.id
+    Cookie       = pingone_davinci_connector_instance.pingcli__Cookie.id
+  }
+}
+OUTTF
+  # Flow/policy outputs are only appended when those resource types exist.
+  if grep -q 'resource "pingone_davinci_application_flow_policy"' terraform/ping-export-module/*.tf 2>/dev/null; then
+    _policy_label=$(grep -hE 'resource "pingone_davinci_application_flow_policy" "[^"]+"' terraform/ping-export-module/*.tf | sed 's/.*"\(.*\)".*/\1/' | head -1)
+    cat >> terraform/ping-export-module/outputs.tf <<OUTTF
+
+output "flow_policy_ids" {
+  description = "DaVinci application flow policy IDs from the export"
+  value = {
+    main = pingone_davinci_application_flow_policy.${_policy_label}.id
+  }
+}
+OUTTF
+  fi
+  if grep -q 'resource "pingone_davinci_application"' terraform/ping-export-module/*.tf; then
+    _app_label=$(grep -hE 'resource "pingone_davinci_application" "[^"]+"' terraform/ping-export-module/*.tf | sed 's/.*"\(.*\)".*/\1/' | head -1)
+    cat >> terraform/ping-export-module/outputs.tf <<'OUTTF'
+
+output "davinci_application_ids" {
+  description = "DaVinci application IDs from the export"
+  value = {
+    main = pingone_davinci_application.${_app_label}.id
+  }
+}
+
+output "davinci_application_api_key" {
+  description = "DaVinci application API key for the sample app"
+  value       = pingone_davinci_application.${_app_label}.api_key.value
+  sensitive   = true
+}
+OUTTF
+  fi
+  echo "Restored outputs.tf in ping-export-module"
+fi
+
+# 2. Patch flow outputs referencing flow resources generically (feature-pkg uses
+#    flow_ids.main).
+if [ "${_output_dir}" = "terraform" ] && grep -q 'resource "pingone_davinci_flow"' terraform/ping-export-module/*.tf 2>/dev/null; then
+  _flow_label=$(grep -hE 'resource "pingone_davinci_flow" "[^"]+"' terraform/ping-export-module/*.tf | sed 's/.*"\(.*\)".*/\1/' | head -1)
+  if ! grep -q "output \"flow_ids\"" terraform/ping-export-module/outputs.tf; then
+    cat >> terraform/ping-export-module/outputs.tf <<OUTTF
+
+output "flow_ids" {
+  description = "DaVinci flow IDs from the export"
+  value = {
+    main = pingone_davinci_flow.${_flow_label}.id
+  }
+}
+OUTTF
+  fi
+fi

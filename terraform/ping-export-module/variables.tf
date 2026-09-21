@@ -10,6 +10,23 @@ variable "pingone_environment_id" {
 
 # Pingone_davinci_connector_instance Variables
 
+variable "davinci_connection_PingOne_0020_Protect_clientId" {
+  type        = string
+  description = "clientId property for pingcli__PingOne-0020-Protect connector"
+}
+variable "davinci_connection_PingOne_0020_Protect_clientSecret" {
+  type        = string
+  description = "clientSecret property for pingcli__PingOne-0020-Protect connector"
+  sensitive   = true
+}
+variable "davinci_connection_PingOne_0020_Protect_envId" {
+  type        = string
+  description = "envId property for pingcli__PingOne-0020-Protect connector"
+}
+variable "davinci_connection_PingOne_0020_Protect_region" {
+  type        = string
+  description = "region property for pingcli__PingOne-0020-Protect connector"
+}
 variable "davinci_connection_PingOne_clientId" {
   type        = string
   description = "clientId property for pingcli__PingOne connector"
@@ -17,7 +34,6 @@ variable "davinci_connection_PingOne_clientId" {
 variable "davinci_connection_PingOne_clientSecret" {
   type        = string
   description = "clientSecret property for pingcli__PingOne connector"
-  sensitive   = true
 }
 variable "davinci_connection_PingOne_envId" {
   type        = string

@@ -24,11 +24,11 @@ resource "pingone_application" "oidc_sdk_sample_app" {
 resource "pingone_application_flow_policy_assignment" "login_flow" {
   environment_id = var.environment_id
   application_id = pingone_application.oidc_sdk_sample_app.id
-  flow_policy_id = pingone_davinci_application_flow_policy.registration_flow_app_policy.id
+  flow_policy_id = var.dv_flow_policy_id
 
   priority = 1
 
-  depends_on = [pingone_davinci_application_flow_policy.registration_flow_app_policy]
+  depends_on = []
 }
 
 resource "pingone_application_resource_grant" "oidc_sdk_sample_app_openid" {
@@ -46,4 +46,10 @@ resource "pingone_application_resource_grant" "oidc_sdk_sample_app_revoke_scope"
   custom_resource_id = var.oidc_sdk_resource_id
 
   scopes = [var.revoke_scope_id]
+}
+
+# Sample app runtime config (global.js) consumed by the static pages.
+resource "local_file" "env_config" {
+  content  = "window._env_ = {\n  pingOneDomain: \"${var.pingone_domain_suffix}\",\n  pingOneEnvId: \"${var.environment_id}\",\n  companyId: \"${var.environment_id}\",\n  apiKey: \"${var.dv_api_key}\",\n  policyId: \"${var.dv_flow_policy_id}\"\n};"
+  filename = "${path.module}/../../sample-app/global.js"
 }
