@@ -65,8 +65,7 @@ jobs:
         _secrets_file=$(mktemp)
         _tfvars_file=$(mktemp)
         trap 'rm -f "${_secrets_file}" "${_tfvars_file}"' EXIT
-        if ! printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}" 2>/tmp/b64err; then echo "DIAG: TERRAFORM_ENV_BASE64 decode failed: $(cat /tmp/b64err)"; fi
-        if [ -n "${PING_EXPORT_TFVARS_B64-}" ] && ! printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > /dev/null 2>/tmp/b64err2; then echo "DIAG: PING_EXPORT_TFVARS_B64 decode failed: $(cat /tmp/b64err)"; fi
+        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
         . "${_secrets_file}"
         [ -n "${PING_EXPORT_TFVARS_B64-}" ] || {
           echo "ERROR: secret ${PING_EXPORT_SECRET_NAME} is not set; run ./scripts/upload_ping_export_tfvars.sh" >&2

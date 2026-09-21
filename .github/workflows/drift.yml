@@ -49,6 +49,8 @@ jobs:
         }
         printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > "terraform/ping-export-terraform.auto.tfvars"
         unset PING_EXPORT_TFVARS_B64
+      env:
+        PING_EXPORT_TFVARS_B64: ${{ secrets[env.PING_EXPORT_SECRET_NAME] }}
     - name: Terraform init
       id: init
       run: |-
@@ -121,6 +123,8 @@ jobs:
         . "${_secrets_file}"
         printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > "terraform/ping-export-terraform.auto.tfvars"
         unset PING_EXPORT_TFVARS_B64
+      env:
+        PING_EXPORT_TFVARS_B64: ${{ secrets[env.PING_EXPORT_SECRET_NAME] }}
     - name: Terraform init and apply remediation plan
       env:
         TF_VAR_pingone_environment_name: prod

@@ -91,16 +91,16 @@ if grep -q 'clientSecret[[:space:]]*=[[:space:]]*""' "${_tfvars_file}"; then
   printf '%s\n' "Warning: davinci_connection_PingOne_clientSecret is empty in ${_tfvars_file}." >&2
 fi
 
+# CI maps this secret straight into the PING_EXPORT_TFVARS_B64 env var and
+# pipes it to `base64 -d`, so the body must be the bare base64 string.
 _tfvars_b64="$(/usr/bin/base64 -i "${_tfvars_file}" | tr -d '\n')"
-
-_secret_body="export PING_EXPORT_TFVARS_B64='${_tfvars_b64}'"
 
 if [ "${_dry_run}" = true ]; then
   printf '%s\n' "secret: ${_secret_name}"
-  printf '%s\n' "body length: ${#_secret_body}"
+  printf '%s\n' "body length: ${#_tfvars_b64}"
 else
-  gh secret set --app actions "${_secret_name}" --body "${_secret_body}"
+  gh secret set --app actions "${_secret_name}" --body "${_tfvars_b64}"
   printf '%s\n' "Uploaded ${_secret_name}"
 fi
 
-unset _tfvars_b64 _secret_body
+unset _tfvars_b64
