@@ -17,7 +17,7 @@ _env=""
 _drift_type="population-rename"
 
 _usage() {
-  printf '%s\n' "Usage: $0 [--env <environment-name>] [--type population-rename|delete-connector|delete-agreement]"
+  printf '%s\n' "Usage: $0 [--env <environment-name>] [--type population-rename|delete-connector|delete-agreement|flow-rename]"
   exit 2
 }
 

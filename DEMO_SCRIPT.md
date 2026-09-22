@@ -1,183 +1,183 @@
 # GitOps Resilience Demo Script
 
-Exact commands for the six use-case demo. Repo: `pipeline-example-platform-test`.
-Estimated total: 25–35 minutes including pipeline waits.
+Live walkthrough of the Ping Identity GitOps Terraform pipeline. Repo:
+`pipeline-example-platform-test`. Flow: ~30 minutes including pipeline waits.
+
+Narrative: start a feature in the background, prove prod heals itself from
+drift, build a real change in a dev environment, export it to code, promote
+it through qa to prod, tag it as a release — then change our minds and revert.
 
 ## Conventions
 
 - All shell commands run from the repo root (`pipeline-example-platform-test/`).
-- Pipeline waits: watch https://github.com/samir-gandhi/pipeline-example-platform-test/actions
-- `localsecrets` holds Terraform/PingOne worker creds; `pingcli-localsecrets`
-  holds Terraformer creds. Neither is committed.
+- `origin` uses HTTPS with the `gh` credential helper (authed as
+  `samir-gandhi`). Watch pipelines at
+  https://github.com/samir-gandhi/pipeline-example-platform-test/actions
+- Tenant: BBC EU (`pingone.eu`). Prod app: https://demo.pingdevops.com
+- `localsecrets` (gitignored) holds worker creds, regenerated from 1Password
+  via `./scripts/regen_localsecrets.sh`.
 
 ---
 
 ## Phase 0 — Prep (before audience)
 
-### 0.1 Logins
-
 ```sh
-# GitHub CLI (once per machine):
-gh auth switch -h github.com -u samir-gandhi        # repo owner account
+gh auth switch -h github.com -u samir-gandhi       # repo owner account
 
 # PingCLI (human device-code login; expires ~1 day):
-pingcli pingone auth login                          # follow browser prompt
-pingcli pingone auth status                         # expect: Authenticated
+pingcli pingone auth login                         # follow browser prompt — BBC tenant
+pingcli pingone auth status                        # expect: Authenticated
+
+source localsecrets                                # worker creds + AWS + state vars
+export PINGCLI_PINGONE_ROOT_DOMAIN=pingone.eu
+
+# Sanity: prod environment healthy and reconciled with Git
+sh scripts/demo/validate_resources.sh --env prod   # expect all OK
 ```
 
-### 0.2 Source credentials
-
-```sh
-source localsecrets
-source pingcli-localsecrets
-export PINGCLI_PINGONE_ROOT_DOMAIN=pingone.com
-```
-
-### 0.3 Branch / release state (one-time, before the demo)
-
-```sh
-git checkout demo-prep && git pull origin demo-prep
-# Merge demo-prep -> prod (PR or direct):
-git checkout prod && git pull origin prod
-git merge --no-ff demo-prep -m "Release: finalized GitOps resilience demo config"
-git push origin prod                                # -> Feature Deploy Push runs, creates prod env
-# Wait for green, then sync qa and tag:
-git checkout qa && git merge --ff-only prod && git push origin qa   # -> qa env deploy
-git checkout prod && git tag v1.1.0 && git push origin v1.1.0
-git checkout demo-prep
-```
-
-### 0.4 Sanity check
-
-```sh
-make devcheck                                       # fmt/lint/validate/trivy
-sh scripts/demo/validate_resources.sh --env prod    # all OK
-pingcli davinci flows list -e $(cd terraform && terraform output -raw pingone_environment_id 2>/dev/null) -O json
-```
+Point out in GitHub: `prod` and `qa` branches are green, tag `v1.1.0` marks
+the current approved release, the Drift workflow runs hourly.
 
 ---
 
-## Phase 1 — Break prod (UC 5 setup)
+## Phase 1 — Feature branch (start early, runs in background)
 
-Change the flow title in the **prod** environment via DaVinci (UI or API). The
-scripted way:
+```sh
+git checkout prod && git pull origin prod
+git checkout -b 20-add-phone-connector && git push -u origin 20-add-phone-connector
+```
+
+While you demo the other phases, the pipeline provisions a **new PingOne
+environment** (`20-add-phone-connector`) in the background: environment,
+population, agreements, workers, the DaVinci Protect stack, and role
+assignments — everything as code. Nothing manual.
+
+Watch the run go green before Phase 3.
+
+---
+
+## Phase 2 — Drift in prod + automated remediation (UC 4)
+
+Break prod by hand — the DaVinci console way, or the scripted equivalent:
 
 ```sh
 sh scripts/demo/inject_drift.sh --env prod --type flow-rename
-#   drift injected: flow renamed to 'PingOne DaVinci API BADEmail Example'
+#   flow renamed to 'PingOne DaVinci API BADEmail Example'
 ```
 
-UI way: PingOne admin → DaVinci Administrators → **prod** environment →
-Flows → *PingOne DaVinci API Protect Example* → rename title to
-`PingOne DaVinci API BADEmail Example`.
-
-Show the sample app failing or the flow title wrong in the DaVinci console:
+Show the broken title in the DaVinci console (prod environment → Flows).
+Then let the pipeline detect and correct it:
 
 ```sh
-sh scripts/demo/serve_app.sh &                      # https://127.0.0.1:8443
-# open https://127.0.0.1:8443 in browser, accept self-signed cert
+# Detect only — the run FAILS, showing the drift diff as its summary:
+gh workflow run "Drift Detection and Remediation" --ref prod -f remediate=false
+
+# Remediate — the workflow applies the plan, restoring Git as source of truth:
+gh workflow run "Drift Detection and Remediation" --ref prod -f remediate=true
+```
+
+Verify:
+
+```sh
+sh scripts/demo/validate_resources.sh --env prod   # all OK, title restored
+```
+
+Talking point: an hourly cron runs the same detection; Git is the source of
+truth, and out-of-band changes are pulled back automatically.
+
+---
+
+## Phase 3 — Build the feature in the dev environment, export as code (UC 3)
+
+In the DaVinci console for the **`20-add-phone-connector`** environment:
+
+1. Connections → add a connector (e.g. **Http** — quick, no credentials
+   needed; name it `Phone Lookup`)
+2. Optionally touch the flow (rename a node or the flow title)
+
+Export the console work as code (~2s, zero post-processing):
+
+```sh
+git checkout 20-add-phone-connector
+sh scripts/export_pingone.sh
+#   module regenerated + connector vars/env-id stripped by post-hooks
+git status                                        # generated files changed
+
+terraform -chdir=terraform plan -input=false -detailed-exitcode
+#   exit 2 with the new connector in the diff = reconciliation proof (UC 3):
+#   deployed env and code agree; the diff is the feature itself
 ```
 
 ---
 
-## Phase 2 — Drift detection + automated remediation (UC 4)
+## Phase 4 — Promote: PR → qa → prod, tag the release (UC 1, 2, 6)
 
 ```sh
-# Trigger the drift workflow against prod (no remediation first):
-gh workflow run "Drift Detection and Remediation" -R samir-gandhi/pipeline-example-platform-test --ref prod -f remediate=false
-# Watch it fail with the drift summary (terraform plan diff in the run summary)
+git add terraform/ && git commit -m "Add Phone Lookup connection" && git push origin 20-add-phone-connector
 
-# Now remediate through the pipeline:
-gh workflow run "Drift Detection and Remediation" -R samir-gandhi/pipeline-example-platform-test --ref prod -f remediate=true
+# Review artifact: the PR plan job shows the exact infrastructure diff
+gh pr create --base qa --head 20-add-phone-connector \
+  --title "Add Phone Lookup connection" --fill
+# merge the PR -> pipeline deploys the change into the qa environment
+
+# Promote qa -> prod the same way:
+gh pr create --base prod --head qa --title "Promote Phone Lookup to prod" --fill
+# merge -> prod deploy
+
+# Mark the approved release:
+git checkout prod && git pull origin prod && git tag v1.2.0 && git push origin v1.2.0
 ```
 
-Watch the second run apply. Verify title corrected:
-
-```sh
-sh scripts/demo/validate_resources.sh --env prod    # all OK = title fixed, plan exit 0
-pingcli davinci flows list -e "<prod env id>" -O json --log-level error | jq -r '.data[]?.name'
-```
+Show in the PingOne console: the connector exists in qa's environment, then
+in prod's — identical, because both were applied from the same code.
 
 ---
 
-## Phase 3 — Revert prod from QA (UC 1 + 2)
+## Phase 5 — Rollback: revert prod to the approved release (UC 1 + 2)
 
-Simulate a bad release reaching prod (in real life: a bad merge). Force a
-known-bad state into prod, then revert to the approved release:
+A tweak landed after the release (say, an over-eager flow title tweak that
+we now regret):
 
 ```sh
-# Make a bad change on prod (deliberate):
 git checkout prod
-sed -i '' 's/name           = "Terms of Service"/name           = "Terms of Service BROKEN"/' terraform/pingone_platform.tf
-git commit -am "BAD: break agreement title" && git push origin prod
-# wait for Feature Deploy Push green, show agreement renamed in PingOne
-
-# Roll back to the approved release tag:
-git revert HEAD --no-edit && git push origin prod
-# wait for Feature Deploy Push -> Actions log shows 1 destroyed / 1 created
+sed -i '' 's/name           = "Terms of Service"/name           = "Terms of Service v2"/' terraform/pingone_platform.tf
+git commit -am "Post-release tweak" && git push origin prod
+# wait for Feature Deploy Push -> agreement title changes in prod
 ```
 
-Point out in the UI: git history shows `BAD` commit then `Revert`; the pipeline
-restored the state; the `v1.1.0` tag marks the approved release.
-
-Restore-from-Git variant (UC 2): delete the population in PingOne UI, then
-re-run the **Deploy** job of the last successful `prod` run — resource returns.
+Now decide we preferred `v1.2.0` and revert prod to the approved release:
 
 ```sh
-sh scripts/demo/validate_resources.sh --env prod    # green again
+git revert HEAD --no-edit                          # undoes the post-release commit
+git push origin prod
+# -> Feature Deploy Push: plan restores the v1.2.0 state exactly
 ```
 
----
+In the Actions log, show the plan summary: the agreement name restored,
+nothing else touched. In PingOne: prod matches `v1.2.0` again. The qa
+environment is unaffected — environments are independent.
 
-## Phase 4 — Working application (UC 5)
-
-```sh
-sh scripts/demo/validate_resources.sh --env prod    # 11 OK lines incl. flow deployed v1
-sh scripts/demo/serve_app.sh &                      # https://127.0.0.1:8443
-```
-
-Browser: register `demouser1@mailinator.com` / `2FederateM0re!` → dashboard shows
-email + PingOne Protect risk assessment (level/score). End-user journey works —
-flow, policy, connectors, notifications all restored from Git.
-
----
-
-## Phase 5 — New feature + export (UC 3 + export capability)
-
-```sh
-# 1. Create the feature branch (GitHub Issue -> Create a branch, or locally):
-git checkout prod && git pull && git checkout -b 12-protect-flow-enhancement && git push -u origin 12-protect-flow-enhancement
-# -> push.yml deploys a new PingOne environment named after the branch
-
-# 2. Build a change in the new env's DaVinci console (e.g. tweak a node or title).
-
-# 3. Export the console work as code (2s, zero post-processing):
-sh scripts/export_pingone.sh                        # writes terraform/ping-export-module
-git status                                          # generated files changed
-terraform -chdir=terraform plan -input=false -detailed-exitcode   # plan shows the drift vs old code
-
-# 4. Commit, push, open PR to qa: plan job shows the diff as review artifact.
-git add terraform/ && git commit -m "Export <feature> from console" && git push origin 12-protect-flow-enhancement
-gh pr create --base qa --head 12-protect-flow-enhancement --title "Feature: ..." --fill
-# merge PR -> qa deploy; then PR qa -> prod for promotion
-```
-
-Reconciliation proof (UC 3): `terraform plan` says `No changes` right after the
-export + apply — deployed resources now match code exactly.
+Optional UC 2 flourish (restore-from-Git): delete the population
+`Sample Users` in the prod PingOne console, then re-run the **Deploy** job of
+the last successful prod run — the population returns from code.
 
 ---
 
 ## Phase 6 — Audit trail (UC 6)
 
 ```sh
-sh scripts/demo/audit_report.sh --branch prod --since "1 hour ago" > demo-audit.md
+sh scripts/demo/audit_report.sh --branch prod --since "$(date -v-2H '+%Y-%m-%dT%H:%M:%SZ')" > demo-audit.md
 ```
 
 Then narrate in GitHub UI:
-1. **Actions** — every deploy, drift run, revert run with plan summaries.
-2. **Commits/PRs** — the BAD commit, its revert, the export PR review.
-3. **Tags** — `v1.1.0` marks the approved release.
-4. **Artifacts** — plan output attached in run summaries.
+1. **Actions** — the feature deploy, two drift runs (fail + remediate), the
+   promotion deploys, the revert run, each with its plan summary
+2. **PRs** — the feature review with the plan as the review artifact, and the
+   revert commit
+3. **Tags** — `v1.2.0` marks the release we reverted; the tag survives as the
+   record even after rollback, proving release discipline
+4. **Environments** — the feature branch's own environment, created and
+   (if the branch is deleted) destroyed by the pipeline
 
 ---
 
@@ -185,9 +185,13 @@ Then narrate in GitHub UI:
 
 | Symptom | Fix |
 |---|---|
-| `pingcli not authenticated` | `pingcli pingone auth login` |
-| CI: `base64: invalid input` | re-upload the secret: `gh secret set --app actions TERRAFORM_ENV_BASE64 --body "$(base64 -i localsecrets \| tr -d '\n')"` |
+| `pingcli not authenticated` | `pingcli pingone auth login` (BBC tenant) |
+| CI: `base64: invalid input` | `gh secret set --app actions TERRAFORM_ENV_BASE64 --body "$(base64 -i localsecrets \| tr -d '\n')"` |
+| `localsecrets` missing/stale | `./scripts/regen_localsecrets.sh` (resolves 1Password refs) |
 | Flow delete blocked (`CONSTRAINT_VIOLATION`) | rebind flow policy first (`terraform apply -target=...policy...`), then full apply |
 | Agreement won't delete | disable via PUT first, then DELETE |
-| Export leaves `clientSecret = ""` | script backfills from state; if state was reset, re-apply once from a working state first |
-| SSH push fails (wrong account) | push over HTTPS: `git push https://github.com/samir-gandhi/pipeline-example-platform-test.git <branch>` with `gh` authed as `samir-gandhi` |
+| ACM: `Tried to create resource record set ... already exists` | validation records are prod-managed; import into state: `terraform -chdir=terraform import 'aws_route53_record.sample_app_cert_validation["<domain>"]' "Z5N4EF12SSGL2_<record>._CNAME"` |
+| Export leaves empty module | export tool couldn't read DaVinci (wrong creds/region); check worker has DaVinci scopes and `PINGCLI_PINGONE_REGION_CODE=EU` |
+| DNS: browser can't resolve `demo.pingdevops.com` | router cached the pre-launch NXDOMAIN; switch to DoH/1.1.1.1 or wait out the SOA TTL |
+| SSH push fails (wrong account) | `origin` is HTTPS + gh credential helper; if reset, `gh auth setup-git` |
+| Local app: `https://127.0.0.1:8443` cert warning | expected (self-signed); accept to continue |
