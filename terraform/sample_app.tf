@@ -18,15 +18,10 @@ provider "aws" {
 
 locals {
   # Public app host per deployed environment; feature branches stay local.
-  sample_app_hosts = {
-    prod = "demo.pingdevops.com"
-    qa   = "qa-demo.pingdevops.com"
-  }
-  sample_app_host    = lookup(local.sample_app_hosts, var.pingone_environment_name, null)
+  # Only prod gets the public app; other environments (including qa) run it
+  # locally with serve_app.sh.
+  sample_app_host    = var.pingone_environment_name == "prod" ? "demo.pingdevops.com" : null
   sample_app_enabled = local.sample_app_host != null
-  # One certificate covers both hosts; only prod's state manages it and its
-  # validation records. Other environments reference it read-only.
-  sample_app_cert_manager = var.pingone_environment_name == "prod"
 }
 
 data "aws_route53_zone" "sample_app" {
@@ -34,17 +29,8 @@ data "aws_route53_zone" "sample_app" {
   name  = "pingdevops.com."
 }
 
-# Locate the shared certificate in environments that do not manage it.
-data "aws_acm_certificate" "sample_app" {
-  count       = local.sample_app_enabled && !local.sample_app_cert_manager ? 1 : 0
-  provider    = aws.us_east_1
-  domain      = "demo.pingdevops.com"
-  statuses    = ["ISSUED"]
-  most_recent = true
-}
-
 resource "aws_acm_certificate" "sample_app" {
-  count                     = local.sample_app_cert_manager ? 1 : 0
+  count                     = local.sample_app_enabled ? 1 : 0
   provider                  = aws.us_east_1
   domain_name               = "demo.pingdevops.com"
   subject_alternative_names = ["qa-demo.pingdevops.com"]
@@ -56,7 +42,7 @@ resource "aws_acm_certificate" "sample_app" {
 }
 
 resource "aws_route53_record" "sample_app_cert_validation" {
-  for_each = local.sample_app_cert_manager ? {
+  for_each = local.sample_app_enabled ? {
     for dvo in aws_acm_certificate.sample_app[0].domain_validation_options : dvo.domain_name => {
       name  = dvo.resource_record_name
       value = dvo.resource_record_value
@@ -70,7 +56,7 @@ resource "aws_route53_record" "sample_app_cert_validation" {
 }
 
 resource "aws_acm_certificate_validation" "sample_app" {
-  count                   = local.sample_app_cert_manager ? 1 : 0
+  count                   = local.sample_app_enabled ? 1 : 0
   provider                = aws.us_east_1
   certificate_arn         = aws_acm_certificate.sample_app[0].arn
   validation_record_fqdns = [for r in aws_route53_record.sample_app_cert_validation : r.fqdn]
@@ -135,7 +121,7 @@ resource "aws_cloudfront_distribution" "sample_app" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = local.sample_app_cert_manager ? aws_acm_certificate.sample_app[0].arn : data.aws_acm_certificate.sample_app[0].arn
+    acm_certificate_arn      = aws_acm_certificate.sample_app[0].arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2021"
   }
