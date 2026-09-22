@@ -51,6 +51,10 @@ jobs:
       env:
         TF_VAR_pingone_environment_name: prod
       run: |-
+        _secrets_file=$(mktemp)
+        trap 'rm -f "${_secrets_file}"' EXIT
+        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
+        . "${_secrets_file}"
         set +e
         terraform -chdir=terraform plan -input=false -detailed-exitcode -no-color -out=drift.tfplan
         _code=$?
