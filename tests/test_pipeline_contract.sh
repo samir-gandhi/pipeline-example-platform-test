@@ -32,13 +32,14 @@ grep -q '_output_dir="terraform"' scripts/export_pingone.sh
 grep -q -- '--include-values' scripts/export_pingone.sh
 git check-ignore -q pingcli-localsecrets
 
-# Per-branch tfvars secrets: dynamic lookup plus branch-derived upload naming.
-grep -q 'secrets\[env.PING_EXPORT_SECRET_NAME\]' .github/workflows/push.yml
-grep -q 'secrets\[env.PING_EXPORT_SECRET_NAME\]' .github/workflows/pull_request.yml
-grep -q "PING_EXPORT_SECRET_NAME=PING_EXPORT_TFVARS_" .github/workflows/push.yml
-grep -q "PING_EXPORT_SECRET_NAME=PING_EXPORT_TFVARS_" .github/workflows/pull_request.yml
-grep -q 'PING_EXPORT_TFVARS_' scripts/upload_ping_export_tfvars.sh
-grep -q -- '--dry-run' scripts/upload_ping_export_tfvars.sh
+# Connector credentials and environment id are derived, not exported: the
+# wrapper must reference the worker applications and target_environment, and
+# the workflows must not reference the retired per-branch tfvars secret.
+grep -q 'pingone_application.davinci_connection_worker.id' terraform/ping-export-module.tf
+grep -q 'pingone_application.protect_worker.id' terraform/ping-export-module.tf
+grep -q 'pingone_environment.target_environment.id' terraform/ping-export-module.tf
+! grep -R -q 'PING_EXPORT_TFVARS' .github/workflows scripts
+test ! -e scripts/upload_ping_export_tfvars.sh
 
 # Generated/runtime files are ignored; authored Terraform remains visible.
 for path in tfplan plan.tfplan terraform/terraform.tfplan tfvars terraform/terraform-debug.log; do

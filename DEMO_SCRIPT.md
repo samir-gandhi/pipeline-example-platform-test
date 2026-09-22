@@ -152,16 +152,13 @@ git checkout prod && git pull && git checkout -b 12-protect-flow-enhancement && 
 # 2. Build a change in the new env's DaVinci console (e.g. tweak a node or title).
 
 # 3. Export the console work as code (2s, zero post-processing):
-sh scripts/export_pingone.sh                        # writes terraform/ping-export-module + tfvars
+sh scripts/export_pingone.sh                        # writes terraform/ping-export-module
 git status                                          # generated files changed
 terraform -chdir=terraform plan -input=false -detailed-exitcode   # plan shows the drift vs old code
 
-# 4. Upload branch export tfvars as a GH secret (CI needs them):
-./scripts/upload_ping_export_tfvars.sh
-
-# 5. Commit, push, open PR to qa: plan job shows the diff as review artifact.
+# 4. Commit, push, open PR to qa: plan job shows the diff as review artifact.
 git add terraform/ && git commit -m "Export <feature> from console" && git push origin 12-protect-flow-enhancement
-gh pr create --base qa --head <branch> --title "Feature: ..." --fill
+gh pr create --base qa --head 12-protect-flow-enhancement --title "Feature: ..." --fill
 # merge PR -> qa deploy; then PR qa -> prod for promotion
 ```
 
@@ -189,8 +186,7 @@ Then narrate in GitHub UI:
 | Symptom | Fix |
 |---|---|
 | `pingcli not authenticated` | `pingcli pingone auth login` |
-| CI: `base64: invalid input` | re-upload both secrets: `gh secret set --app actions TERRAFORM_ENV_BASE64 --body "$(base64 -i localsecrets \| tr -d '\n')"` and `./scripts/upload_ping_export_tfvars.sh` (script now uploads raw base64, matching CI) |
-| CI: missing `PING_EXPORT_TFVARS_<BRANCH>` | `./scripts/upload_ping_export_tfvars.sh` from that branch |
+| CI: `base64: invalid input` | re-upload the secret: `gh secret set --app actions TERRAFORM_ENV_BASE64 --body "$(base64 -i localsecrets \| tr -d '\n')"` |
 | Flow delete blocked (`CONSTRAINT_VIOLATION`) | rebind flow policy first (`terraform apply -target=...policy...`), then full apply |
 | Agreement won't delete | disable via PUT first, then DELETE |
 | Export leaves `clientSecret = ""` | script backfills from state; if state was reset, re-apply once from a working state first |

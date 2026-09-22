@@ -83,9 +83,12 @@ Note: SSH remotes resolve to the wrong GitHub account on this machine. Push over
   (`platform-state/dev/<branch>/terraform.tfstate`) — fixes must be applied
   per-environment state, not just once.
 - Terraform plan models population drift as delete+recreate (`1 to add`).
-- `pingone_environment_id` export var comes from `terraform/ping-export-terraform.auto.tfvars`
-  (gitignored, per-branch GH secret). CI needs `PING_EXPORT_TFVARS_<BRANCH>` uploaded via
-  `./scripts/upload_ping_export_tfvars.sh` before any prod/qa run.
+- Connector credentials and the environment id are derived in
+  `terraform/ping-export-module.tf` from the environment's worker apps and
+  `target_environment` — no per-environment tfvars is needed. The export
+  script's post-hooks strip the exporter's credential/env lines, restore the
+  wrapper, and set generated import blocks aside (they only apply to the
+  source environment).
 - Local terraform runs need `-reconfigure` when switching backend keys, and
   `TF_VAR_pingone_environment_name=<branch>` exported.
 - Local plan against a fresh checkout fails with required-var errors — source

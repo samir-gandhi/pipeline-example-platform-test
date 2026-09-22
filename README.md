@@ -158,24 +158,18 @@ gh secret set --app actions TERRAFORM_ENV_BASE64 --body $_secrets
 unset _secrets
 ```
 
-#### Per-Environment Export Tfvars
+#### Exported Configuration
 
-The Terraformer export generates `terraform/ping-export-terraform.auto.tfvars`, which is local-only and gitignored. CI deploys read this file, so its contents must be uploaded as a GitHub Actions secret per environment. Secret names are branch-derived:
-
-- `qa` → `PING_EXPORT_TFVARS_QA`
-- `prod` → `PING_EXPORT_TFVARS_PROD`
-- feature branch `10-new-feature-b` → `PING_EXPORT_TFVARS_10_NEW_FEATURE_B` (uppercase, `/ . -` normalized to `_`; branch names differing only by these separators collide)
-
-From the checked-out branch (or pass `--environment qa|prod`), upload the generated tfvars without printing values:
-
-```bash
-./scripts/upload_ping_export_tfvars.sh
-```
-
-Use `--dry-run` to preview the secret name and body length. The workflows fail with a clear message when the matching secret is missing, and never echo secret values.
-
-> [!IMPORTANT]
-> Terraform import blocks (`terraform/ping-export-imports.tf`) are not secret material and stay local-only. Adopt imports by running `./scripts/local_feature_deploy.sh` **before** pushing the branch; otherwise CI attempts to create duplicate resources and fails.
+The Terraformer export generates `terraform/ping-export-module/` plus a small
+`terraform/ping-export-terraform.auto.tfvars` (gitignored). Connector
+credentials and the environment id are **not** exported: the module wrapper
+(`terraform/ping-export-module.tf`) derives them from the environment's worker
+applications and `target_environment`, so every branch deploys the same code
+and no per-environment secret upload is required. Generated import blocks
+(`terraform/ping-export-imports.tf`) only apply to the source environment —
+the export script sets them aside as `terraform/imports-reference.tf`; adopt
+imports manually with `./scripts/local_feature_deploy.sh` when adopting an
+existing environment.
 ### Deploy Prod and QA
 
 The final step before creating new features is to deploy the static environments `prod` and `qa`.

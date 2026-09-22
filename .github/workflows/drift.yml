@@ -20,7 +20,6 @@ concurrency:
 
 env:
   TERRAFORM_ENV_BASE64: ${{ secrets.TERRAFORM_ENV_BASE64 }}
-  PING_EXPORT_SECRET_NAME: PING_EXPORT_TFVARS_PROD
 
 jobs:
   detect:
@@ -35,22 +34,6 @@ jobs:
       with:
         ref: prod
     - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
-    - name: Restore export tfvars
-      run: |-
-        umask 077
-        _secrets_file=$(mktemp)
-        _tfvars_file=$(mktemp)
-        trap 'rm -f "${_secrets_file}" "${_tfvars_file}"' EXIT
-        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
-        . "${_secrets_file}"
-        [ -n "${PING_EXPORT_TFVARS_B64-}" ] || {
-          echo "ERROR: secret ${PING_EXPORT_SECRET_NAME} is not set; run ./scripts/upload_ping_export_tfvars.sh --environment prod" >&2
-          exit 1
-        }
-        printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > "terraform/ping-export-terraform.auto.tfvars"
-        unset PING_EXPORT_TFVARS_B64
-      env:
-        PING_EXPORT_TFVARS_B64: ${{ secrets[env.PING_EXPORT_SECRET_NAME] }}
     - name: Terraform init
       id: init
       run: |-
@@ -113,18 +96,6 @@ jobs:
       with:
         ref: prod
     - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
-    - name: Restore export tfvars
-      run: |-
-        umask 077
-        _secrets_file=$(mktemp)
-        _tfvars_file=$(mktemp)
-        trap 'rm -f "${_secrets_file}" "${_tfvars_file}"' EXIT
-        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
-        . "${_secrets_file}"
-        printf '%s' "${PING_EXPORT_TFVARS_B64}" | base64 -d > "terraform/ping-export-terraform.auto.tfvars"
-        unset PING_EXPORT_TFVARS_B64
-      env:
-        PING_EXPORT_TFVARS_B64: ${{ secrets[env.PING_EXPORT_SECRET_NAME] }}
     - name: Terraform init and apply remediation plan
       env:
         TF_VAR_pingone_environment_name: prod
