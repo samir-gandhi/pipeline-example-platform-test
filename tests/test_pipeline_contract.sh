@@ -4,9 +4,12 @@ set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "${ROOT}"
 
-# The local check must execute the security scan, not merely validate the binary.
+# The local check must execute fmt/validate/lint; trivy was removed from CI
+# and devcheck (misconfig findings on the sample-app S3 bucket, tracked
+# separately if reintroduced).
 devcheck=$(make -n devcheck)
-test "$(printf '%s\n' "${devcheck}" | grep -c 'trivy config')" -eq 1
+test "$(printf '%s\n' "${devcheck}" | grep -c 'tflint --recursive')" -eq 1
+test "$(printf '%s\n' "${devcheck}" | grep -c 'trivy config')" -eq 0
 
 # Workflow contracts: no floating scanner/tool references or interactive Terraform.
 ! grep -R -n -E '@master|tflint_version:[[:space:]]*latest' .github/workflows
