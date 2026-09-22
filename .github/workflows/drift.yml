@@ -80,7 +80,9 @@ jobs:
         git diff --stat HEAD -- .github | true
         echo "Drift detected: ${_drifted}"
     - name: Require drift remediation approval
-      if: ${{ inputs.remediate != true && steps.plan.outputs.drifted == 'true' }}
+      # The input arrives as a boolean from the UI checkbox but as the string
+      # "true" when dispatched via the REST API or gh CLI, so check both.
+      if: ${{ steps.plan.outputs.drifted == 'true' && inputs.remediate != true && inputs.remediate != 'true' }}
       run: |-
         {
           echo "Drift detected but automatic remediation is disabled."
@@ -92,7 +94,7 @@ jobs:
   remediate:
     name: Remediate drift (apply plan)
     needs: [detect]
-    if: ${{ needs.detect.outputs.drifted == 'true' && inputs.remediate == true }}
+    if: ${{ needs.detect.outputs.drifted == 'true' && (inputs.remediate == true || inputs.remediate == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
