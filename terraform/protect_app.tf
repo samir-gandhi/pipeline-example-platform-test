@@ -100,6 +100,6 @@ resource "pingone_application_resource_grant" "oidc_sdk_sample_app_revoke_scope"
 
 # Generated sample-app runtime config (gitignored; contains the API key).
 resource "local_file" "env_config" {
-  content  = "window._env_ = {\n  pingOneDomain: \"com\",\n  pingOneEnvId: \"${pingone_environment.target_environment.id}\",\n  companyId: \"${pingone_environment.target_environment.id}\",\n  apiKey: \"${module.ping-export.pingone_davinci_application__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application__api_key__value}\",\n  policyId: \"${module.ping-export.pingone_davinci_application_flow_policy__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Policy__id}\"\n};"
+  content  = "window._env_ = {\n  pingOneDomain: \"eu\",\n  pingOneEnvId: \"${pingone_environment.target_environment.id}\",\n  companyId: \"${pingone_environment.target_environment.id}\",\n  apiKey: \"${module.ping-export.pingone_davinci_application__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application__api_key__value}\",\n  policyId: \"${module.ping-export.pingone_davinci_application_flow_policy__pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Policy__id}\"\n};"
   filename = "${path.module}/../sample-app/global.js"
 }
