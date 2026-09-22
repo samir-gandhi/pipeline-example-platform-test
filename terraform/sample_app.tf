@@ -36,10 +36,10 @@ data "aws_route53_zone" "sample_app" {
 
 # Locate the shared certificate in environments that do not manage it.
 data "aws_acm_certificate" "sample_app" {
-  count      = local.sample_app_enabled && !local.sample_app_cert_manager ? 1 : 0
-  provider   = aws.us_east_1
-  domain     = "demo.pingdevops.com"
-  statuses   = ["ISSUED"]
+  count       = local.sample_app_enabled && !local.sample_app_cert_manager ? 1 : 0
+  provider    = aws.us_east_1
+  domain      = "demo.pingdevops.com"
+  statuses    = ["ISSUED"]
   most_recent = true
 }
 
