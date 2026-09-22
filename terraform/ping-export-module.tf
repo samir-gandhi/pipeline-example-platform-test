@@ -1,16 +1,20 @@
+# DERIVED-CONNECTOR-CREDS: hand-maintained wrapper; export script restores this form
+
 module "ping-export" {
   source = "./ping-export-module"
 
-  pingone_environment_id = var.pingone_environment_id
+  pingone_environment_id = pingone_environment.target_environment.id
 
-  # Pingone_davinci_connector_instance Variables
-  davinci_connection_PingOne_0020_Protect_clientId     = var.davinci_connection_PingOne_0020_Protect_clientId
-  davinci_connection_PingOne_0020_Protect_clientSecret = var.davinci_connection_PingOne_0020_Protect_clientSecret
-  davinci_connection_PingOne_0020_Protect_envId        = var.davinci_connection_PingOne_0020_Protect_envId
-  davinci_connection_PingOne_0020_Protect_region       = var.davinci_connection_PingOne_0020_Protect_region
-  davinci_connection_PingOne_clientId                  = var.davinci_connection_PingOne_clientId
-  davinci_connection_PingOne_clientSecret              = var.davinci_connection_PingOne_clientSecret
-  davinci_connection_PingOne_envId                     = var.davinci_connection_PingOne_envId
-  davinci_connection_PingOne_region                    = var.davinci_connection_PingOne_region
+  # Connector credentials are derived from the environment's worker
+  # applications rather than exported values, so the same code deploys to
+  # any environment without per-branch tfvars for these fields.
+  davinci_connection_PingOne_0020_Protect_clientId     = pingone_application.protect_worker.id
+  davinci_connection_PingOne_0020_Protect_clientSecret = pingone_application_secret.protect_worker_app.secret
+  davinci_connection_PingOne_0020_Protect_envId        = pingone_environment.target_environment.id
+  davinci_connection_PingOne_0020_Protect_region       = var.pingone_client_region_code
+  davinci_connection_PingOne_clientId                  = pingone_application.davinci_connection_worker.id
+  davinci_connection_PingOne_clientSecret              = pingone_application_secret.davinci_connection_worker.secret
+  davinci_connection_PingOne_envId                     = pingone_environment.target_environment.id
+  davinci_connection_PingOne_region                    = var.pingone_client_region_code
 
 }
