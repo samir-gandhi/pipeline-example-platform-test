@@ -44,12 +44,17 @@ resource "aws_acm_certificate" "sample_app" {
 }
 
 resource "aws_route53_record" "sample_app_cert_validation" {
-  for_each = local.sample_app_enabled ? toset([for dvo in aws_acm_certificate.sample_app[0].domain_validation_options : dvo.domain_name]) : toset([])
-  zone_id  = data.aws_route53_zone.sample_app[0].zone_id
-  name     = each.value
-  type     = "CNAME"
-  ttl      = 60
-  records  = [for dvo in aws_acm_certificate.sample_app[0].domain_validation_options : dvo.resource_record_value if dvo.domain_name == each.value]
+  for_each = local.sample_app_enabled ? {
+    for dvo in aws_acm_certificate.sample_app[0].domain_validation_options : dvo.domain_name => {
+      name  = dvo.resource_record_name
+      value = dvo.resource_record_value
+    }
+  } : {}
+  zone_id = data.aws_route53_zone.sample_app[0].zone_id
+  name    = each.value.name
+  type    = "CNAME"
+  ttl     = 60
+  records = [each.value.value]
 }
 
 resource "aws_acm_certificate_validation" "sample_app" {
