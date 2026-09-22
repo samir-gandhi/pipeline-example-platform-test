@@ -117,10 +117,10 @@ jobs:
           -backend-config="key=${_stateKey}"
         echo "***Running terraform apply***"
         terraform -chdir="${_tfdir}" apply --auto-approve -input=false
-        # Publish the sample app for qa/prod; feature branches run it locally.
+        # Publish the sample app for prod; other environments run it locally.
         case ${_branch} in
-          prod|qa)
-            aws s3 sync sample-app/ "s3://pipeline-example-sample-app-${_branch}/" \
+          prod)
+            aws s3 sync sample-app/ "s3://pipeline-example-sample-app-prod/" \
               --region "${TF_VAR_tf_state_region}" --delete \
               --cache-control "no-cache"
             ;;
