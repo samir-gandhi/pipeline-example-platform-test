@@ -56,8 +56,14 @@ resource "pingone_application" "oidc_sdk_sample_app" {
     response_types             = ["CODE", "TOKEN", "ID_TOKEN"]
     pkce_enforcement           = "S256_REQUIRED"
     token_endpoint_auth_method = "NONE"
-    redirect_uris              = ["https://127.0.0.1:8080/dashboard.html"]
-    post_logout_redirect_uris  = ["https://127.0.0.1:8080"]
+    redirect_uris = concat(
+      ["https://127.0.0.1:8080/dashboard.html"],
+      local.sample_app_enabled ? ["https://${local.sample_app_host}/dashboard.html"] : []
+    )
+    post_logout_redirect_uris = concat(
+      ["https://127.0.0.1:8080"],
+      local.sample_app_enabled ? ["https://${local.sample_app_host}"] : []
+    )
   }
 }
 
