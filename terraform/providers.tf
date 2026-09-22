@@ -11,10 +11,3 @@ provider "pingone" {
     }
   }
 }
-
-provider "davinci" {
-  username       = var.pingone_davinci_admin_username
-  password       = var.pingone_davinci_admin_password
-  region         = var.pingone_davinci_admin_region
-  environment_id = var.pingone_davinci_admin_environment_id
-}

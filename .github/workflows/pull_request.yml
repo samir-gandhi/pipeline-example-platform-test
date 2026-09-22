@@ -95,7 +95,7 @@ jobs:
           -backend-config="key=${_stateKey}"
         echo "***Running terraform validate***"
         terraform -chdir="${_tfdir}" validate
-        
+
   trivy:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     needs: [validate]

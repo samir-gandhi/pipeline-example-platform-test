@@ -45,28 +45,16 @@ Information needed from the environment in which the application resides (Enviro
 - `License ID` - This value will be assigned to **TF_VAR_pingone_license_id** in the localsecrets file
 - `Environment Type` - This value will be assigned to **TF_VAR_pingone_environment_type** in the localsecrets file
 
-### Davinci Administrator Environment, User and Group
+### DaVinci Administrator Environment and Group
 
-An environment with the following characteristics:
+Use an environment with **PingOne SSO** and **PingOne DaVinci** enabled. Create a Terraform group in the DaVinci Administrator environment and grant it the `DaVinci Admin` role.
 
-- **PingOne SSO** and **PingOne DaVinci** services enabled
-- A group for Davinci Administrators with the 'DaVinci Admin' role for the DaVinci Administrator environment
-- A user in the Davinci Administrator environment that is a member of the Davinci Administrators group
+Record these values:
 
-Information needed from the user in the Davinci Administrator environment (Directory > Users > <user_name>):
+- `Environment ID` → `TF_VAR_pingone_davinci_admin_environment_id`
+- Terraform group `Group ID` → `TF_VAR_pingone_davinci_terraform_group_id`
 
-- `Username` - This value will be assigned to **TF_VAR_pingone_davinci_admin_username** in the localsecrets file. Treat it as sensitive and never commit or print it.
-- `Password` - This value will be assigned to **TF_VAR_pingone_davinci_admin_password** in the localsecrets file. This is sensitive and must never be committed or printed.
-
-Information needed from the environment in which the application resides (Environment > Settings > Environment Properties):
-
-- `Environment ID` - This value will be assigned to **TF_VAR_pingone_davinci_admin_environment_id** in the localsecrets file
-
-- `Region` - This value will be assigned to **TF_VAR_pingone_davinci_admin_region** in the localsecrets file
-
-Information needed from the group in the Davinci Administrator environment (Directory > Groups > <group_name>):
-
-- `Group ID` - This value will be assigned to **TF_VAR_pingone_davinci_terraform_group_id** in the localsecrets file
+The pipeline grants this group access to each environment it creates. DaVinci connector instances are now managed through the PingOne provider; no deprecated DaVinci username/password provider credentials are required.
 
 ### AWS S3 Bucket
 
@@ -86,10 +74,10 @@ Information needed from the AWS S3 bucket and user:
 
 To be successful in recreating the use cases supported by this pipeline, there are initial steps that should be completed prior to configuring this repository:
 
-- A [PingOne trial](https://docs.pingidentity.com/r/en-us/pingone/p1_start_a_pingone_trial) or paid account configured according to the [PingOne Terraform access](https://terraform.pingidentity.com/getting-started/pingone/) and [DaVinci Terraform](https://terraform.pingidentity.com/getting-started/davinci/) access guidelines.
+- A [PingOne trial](https://docs.pingidentity.com/r/en-us/pingone/p1_start_a_pingone_trial) or paid account configured according to the [PingOne Terraform access](https://terraform.pingidentity.com/getting-started/pingone/) guidelines.
 
 > [!IMPORTANT]
-> For PingOne, meeting these requirements means you should have credentials for a worker app residing in the "Administrators" environment that has organization-level scoped roles. For DaVinci, you should have credentials for a user in a non-"Administrators" environment that is part of a group specifically intended to be used by command-line tools or APIs with environment-level scoped roles. This demonstration will add roles to the DaVinci command-line group and will fail if roles are not scoped properly.
+> The worker application must have organization-level roles. The Terraform DaVinci group must have the `DaVinci Admin` role in the DaVinci Administrator environment; the pipeline grants that group access to newly created environments.
 
 - An [AWS trial](https://aws.amazon.com/free/?all-free-tier.sort-by=item.additionalFields.SortRank&all-free-tier.sort-order=asc&awsf.Free%20Tier%20Types=*all&awsf.Free%20Tier%20Categories=*all) or paid account
 - Terraform CLI v1.6+
@@ -170,6 +158,18 @@ gh secret set --app actions TERRAFORM_ENV_BASE64 --body $_secrets
 unset _secrets
 ```
 
+#### Exported Configuration
+
+The Terraformer export generates `terraform/ping-export-module/` plus a small
+`terraform/ping-export-terraform.auto.tfvars` (gitignored). Connector
+credentials and the environment id are **not** exported: the module wrapper
+(`terraform/ping-export-module.tf`) derives them from the environment's worker
+applications and `target_environment`, so every branch deploys the same code
+and no per-environment secret upload is required. Generated import blocks
+(`terraform/ping-export-imports.tf`) only apply to the source environment —
+the export script sets them aside as `terraform/imports-reference.tf`; adopt
+imports manually with `./scripts/local_feature_deploy.sh` when adopting an
+existing environment.
 ### Deploy Prod and QA
 
 The final step before creating new features is to deploy the static environments `prod` and `qa`.
@@ -229,7 +229,36 @@ To experience the developer's perspective, a demonstration walkthrough of the st
 
 #### Extract and Review New Configuration
 
-After the application creation is "tested" manually, the new configuration must be added to the Terraform configuration. This addition will happen in a few steps, starting with creating and testing the configuration in the `./terraform` folder.
+After the configuration is tested, use the PingCLI Terraformer exporter when it supports the resource. It currently exports selected DaVinci resources through the PingOne Terraform provider; unsupported configuration still follows the Terraform import workflow below.
+
+Install the exporter following the [pingidentity/pingcli-plugin-terraformer](https://github.com/pingidentity/pingcli-plugin-terraformer) instructions. Create a local credential file from the committed template:
+
+```bash
+cp pingcli-secretstemplate pingcli-localsecrets
+chmod 600 pingcli-localsecrets
+${EDITOR:-vi} pingcli-localsecrets
+. ./pingcli-localsecrets
+```
+
+`pingcli-localsecrets` is ignored and must never be committed. Rotate/revoke credentials if they are exposed. The export worker needs DaVinci read access; it is separate from the Terraform deployment secret file.
+
+From a feature branch, export supported resources into the Terraform root:
+
+```bash
+./scripts/export_pingone.sh
+```
+
+The script reads `pingone_environment_id` from Terraform output. It initializes the S3 backend using the same branch-specific state key as deployment, so the current branch determines the export environment. For an explicit target or detached checkout, pass the environment ID:
+
+```bash
+./scripts/export_pingone.sh --environment-id <environment-id>
+```
+
+The script rejects unsafe branch names and writes the exporter output to `terraform/` by default. Do not edit generated files; rerun the export to update them. The generated root wrapper, variables, optional auto tfvars, imports, and child module are consumed directly by Terraform. Keep hand-authored configuration for resources Terraformer does not support in separate canonical files. Do not overwrite the production state without reviewing imports and the Terraform plan.
+
+After exporting, run the normal local checks. The export package uses `pingone_davinci_connector_instance` resources from the PingOne provider. The generated `terraform/ping-export-terraform.auto.tfvars` is local-only and ignored by Git; do not delete it unless intentionally discarding the export.
+
+For resources unsupported by Terraformer, use the Terraform import workflow below. This addition will happen in a few steps, starting with creating and testing the configuration in the `./terraform` folder.
 
 1. Navigate to the folder containing the platform repository and check out the development branch:
 
@@ -503,3 +532,4 @@ The environments created by the pipeline can be removed by following these steps
 The potential issue stems from the environments to which the Davinci Admin role is attached.  As new environments are created, they are added to this list.  The pipeline handles the removal of permissions to a development environment during the pruning process when a branch is deleted.  However, the **prod** environment cannot be removed from the Github repository, leaving no automated way at this time to remove the environment from PingOne.
 
 In some cases, it was observed that deleting the environments directly in PingOne resulted in an ambiguous state for the Davinci Admin role, leaving the Davinci Administrator unable to login or manage environments.  Removing the environments to be deleted from the role beforehand should prevent this possibility.
+# demo-prep trigger note

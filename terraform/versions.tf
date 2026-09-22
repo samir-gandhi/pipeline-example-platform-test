@@ -3,11 +3,15 @@ terraform {
   required_providers {
     pingone = {
       source  = "pingidentity/pingone"
-      version = ">= 1.1.1, < 2.0.0"
+      version = ">= 1.19.1, < 2.0.0"
     }
-    davinci = {
-      source  = "pingidentity/davinci"
-      version = "~> 0.4"
+    local = {
+      source  = "hashicorp/local"
+      version = ">= 2.4"
+    }
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 5.0"
     }
   }
   backend "s3" {}

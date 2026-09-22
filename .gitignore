@@ -3,9 +3,11 @@ terraform.tfvars
 *.local
 localvars*
 localsecret*
+pingcli-localsecrets
+pingcli-local*
 glitchenv*
 generated
-imports.tf
+*imports.tf
 generated-platform.tf
 
 # Local .terraform directories
@@ -55,3 +57,6 @@ terraform-*.log
 .terraformrc
 terraform.rc
 .polaris/
+
+# Generated sample-app runtime config (contains DaVinci API key)
+sample-app/global.js

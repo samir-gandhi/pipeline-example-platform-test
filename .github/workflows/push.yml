@@ -42,7 +42,7 @@ jobs:
     needs: [lint]
     name: validate
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
     env:
       TERRAFORM_ENV_BASE64: ${{ secrets.TERRAFORM_ENV_BASE64 }}
     steps:
@@ -75,7 +75,7 @@ jobs:
           -backend-config="key=${_stateKey}"
         echo "***Running terraform validate***"
         terraform -chdir="${_tfdir}" validate
-        
+
   deploy:
     if: ${{ !contains(github.event.head_commit.message || '', '[skip ci]') && github.ref_type == 'branch' }}
     name: Deploy
@@ -84,7 +84,7 @@ jobs:
       group: terraform-${{ github.ref_name }}
       cancel-in-progress: false
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 30
     env:
       TERRAFORM_ENV_BASE64: ${{ secrets.TERRAFORM_ENV_BASE64 }}
     steps:
@@ -117,3 +117,11 @@ jobs:
           -backend-config="key=${_stateKey}"
         echo "***Running terraform apply***"
         terraform -chdir="${_tfdir}" apply --auto-approve -input=false
+        # Publish the sample app for qa/prod; feature branches run it locally.
+        case ${_branch} in
+          prod|qa)
+            aws s3 sync sample-app/ "s3://pipeline-example-sample-app-${_branch}/" \
+              --region "${TF_VAR_tf_state_region}" --delete \
+              --cache-control "no-cache"
+            ;;
+        esac
