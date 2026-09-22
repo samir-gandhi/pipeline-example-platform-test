@@ -29,6 +29,16 @@ resource "pingone_davinci_connector_instance" "pingcli__Error-0020-Message" {
 }
 
 
+resource "pingone_davinci_connector_instance" "pingcli__Functions-Renamed" {
+  environment_id = var.pingone_environment_id
+  name           = "Functions-Renamed"
+
+  connector = {
+    id = "functionsConnector"
+  }
+}
+
+
 resource "pingone_davinci_connector_instance" "pingcli__Http" {
   environment_id = var.pingone_environment_id
   name           = "Http"
@@ -49,19 +59,19 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne" {
   properties = jsonencode({
     "clientId" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_clientId
+      "value" : "var.davinci_connection_PingOne_clientId"
     },
     "clientSecret" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_clientSecret
+      "value" : "var.davinci_connection_PingOne_clientSecret"
     },
     "envId" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_envId
+      "value" : "var.davinci_connection_PingOne_envId"
     },
     "region" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_region
+      "value" : "var.davinci_connection_PingOne_region"
     }
   })
 }
@@ -77,19 +87,19 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne-0020-Protect" {
   properties = jsonencode({
     "clientId" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_clientId
+      "value" : "var.davinci_connection_PingOne_0020_Protect_clientId"
     },
     "clientSecret" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_clientSecret
+      "value" : "var.davinci_connection_PingOne_0020_Protect_clientSecret"
     },
     "envId" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_envId
+      "value" : "var.davinci_connection_PingOne_0020_Protect_envId"
     },
     "region" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_region
+      "value" : "var.davinci_connection_PingOne_0020_Protect_region"
     }
   })
 }

@@ -23,6 +23,11 @@ output "pingone_davinci_connector_instance__pingcli__Error-0020-Message__id" {
   value       = pingone_davinci_connector_instance.pingcli__Error-0020-Message.id
 }
 
+output "pingone_davinci_connector_instance__pingcli__Functions-Renamed__id" {
+  description = "The id of pingone_davinci_connector_instance pingcli__Functions-Renamed"
+  value       = pingone_davinci_connector_instance.pingcli__Functions-Renamed.id
+}
+
 output "pingone_davinci_connector_instance__pingcli__Http__id" {
   description = "The id of pingone_davinci_connector_instance pingcli__Http"
   value       = pingone_davinci_connector_instance.pingcli__Http.id
