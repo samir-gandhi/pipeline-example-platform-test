@@ -43,6 +43,14 @@ command -v terraform >/dev/null 2>&1 || {
   exit 1
 }
 
+# The Terraformer worker credentials default to the same worker app that
+# drives Terraform (sourced from localsecrets as TF_VAR_pingone_client_*).
+# Dedicated PINGCLI_PINGONE_* values still win if exported.
+: "${PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_ID:=${TF_VAR_pingone_client_id-}}"
+: "${PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_SECRET:=${TF_VAR_pingone_client_secret-}}"
+: "${PINGCLI_PINGONE_ENVIRONMENT_ID:=${TF_VAR_pingone_client_environment_id-}}"
+: "${PINGCLI_PINGONE_REGION_CODE:=${TF_VAR_pingone_client_region_code-}}"
+
 [ -n "${PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_ID-}" ] || {
   printf '%s\n' "PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_ID is required." >&2
   exit 1
