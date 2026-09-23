@@ -43,6 +43,14 @@ command -v terraform >/dev/null 2>&1 || {
   exit 1
 }
 
+# The Terraformer worker credentials default to the same worker app that
+# drives Terraform (sourced from localsecrets as TF_VAR_pingone_client_*).
+# Dedicated PINGCLI_PINGONE_* values still win if exported.
+: "${PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_ID:=${TF_VAR_pingone_client_id-}}"
+: "${PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_SECRET:=${TF_VAR_pingone_client_secret-}}"
+: "${PINGCLI_PINGONE_ENVIRONMENT_ID:=${TF_VAR_pingone_client_environment_id-}}"
+: "${PINGCLI_PINGONE_REGION_CODE:=${TF_VAR_pingone_client_region_code-}}"
+
 [ -n "${PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_ID-}" ] || {
   printf '%s\n' "PINGCLI_PINGONE_CLIENT_CREDENTIALS_CLIENT_ID is required." >&2
   exit 1
@@ -169,5 +177,10 @@ PYSTRIP
       -e '/# Terraform variable values/d' -e '/# Pingone_davinci_connector_instance/d' \
       terraform/ping-export-terraform.auto.tfvars
   fi
+  # 7. The exporter emits interpolation-only expressions ("${var.x}") inside
+  #    jsonencode blocks; tflint flags those as deprecated. Rewrite to plain
+  #    references (var.x) — identical behavior, lint-clean.
+  find terraform/ping-export-module -name '*.tf' -print0 | xargs -0 perl -pi -e \
+    's/"\$\{var\.([A-Za-z0-9_]+)\}"/var.$1/g'
 fi
 
