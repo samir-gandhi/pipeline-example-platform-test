@@ -9,6 +9,7 @@ glitchenv*
 generated
 *imports.tf
 generated-platform.tf
+imports-reference.tf
 
 # Local .terraform directories
 **/.terraform/*
