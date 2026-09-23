@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - '**'
+      # Skip Dependabot's auto-generated branches: no deployable config, and
+      # the branch name would make an invalid environment name/state key.
+      - '!dependabot/**'
     paths:
       - 'terraform/**'
       - 'scripts/**'
@@ -17,7 +20,7 @@ permissions:
 
 jobs:
   provision:
-    if: ${{ github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref != 'qa' && github.event.ref != 'prod' }}
+    if: ${{ github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref != 'qa' && github.event.ref != 'prod' && !startsWith(github.event.ref, 'dependabot/') }}
     name: Create Feature Environment
     concurrency:
       group: terraform-${{ github.event.ref }}
