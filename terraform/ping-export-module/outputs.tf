@@ -23,6 +23,11 @@ output "pingone_davinci_connector_instance__pingcli__Error-0020-Message__id" {
   value       = pingone_davinci_connector_instance.pingcli__Error-0020-Message.id
 }
 
+output "pingone_davinci_connector_instance__pingcli__Functions__id" {
+  description = "The id of pingone_davinci_connector_instance pingcli__Functions"
+  value       = pingone_davinci_connector_instance.pingcli__Functions.id
+}
+
 output "pingone_davinci_connector_instance__pingcli__Http__id" {
   description = "The id of pingone_davinci_connector_instance pingcli__Http"
   value       = pingone_davinci_connector_instance.pingcli__Http.id
@@ -38,9 +43,19 @@ output "pingone_davinci_connector_instance__pingcli__PingOne__id" {
   value       = pingone_davinci_connector_instance.pingcli__PingOne.id
 }
 
+output "pingone_davinci_connector_instance__pingcli__Teleport__id" {
+  description = "The id of pingone_davinci_connector_instance pingcli__Teleport"
+  value       = pingone_davinci_connector_instance.pingcli__Teleport.id
+}
+
 output "pingone_davinci_connector_instance__pingcli__Variables__id" {
   description = "The id of pingone_davinci_connector_instance pingcli__Variables"
   value       = pingone_davinci_connector_instance.pingcli__Variables.id
+}
+
+output "pingone_davinci_flow__pingcli__FEATURE-003A--0020-PingOne-0020-Account-0020-Recovery-0020-by-0020-Email__id" {
+  description = "The id of pingone_davinci_flow pingcli__FEATURE-003A--0020-PingOne-0020-Account-0020-Recovery-0020-by-0020-Email"
+  value       = pingone_davinci_flow.pingcli__FEATURE-003A--0020-PingOne-0020-Account-0020-Recovery-0020-by-0020-Email.id
 }
 
 output "pingone_davinci_flow__pingcli__PingOne-0020-DaVinci-0020-API-0020-Protect-0020-Example__id" {
