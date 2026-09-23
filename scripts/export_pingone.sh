@@ -177,5 +177,10 @@ PYSTRIP
       -e '/# Terraform variable values/d' -e '/# Pingone_davinci_connector_instance/d' \
       terraform/ping-export-terraform.auto.tfvars
   fi
+  # 7. The exporter emits interpolation-only expressions ("${var.x}") inside
+  #    jsonencode blocks; tflint flags those as deprecated. Rewrite to plain
+  #    references (var.x) — identical behavior, lint-clean.
+  find terraform/ping-export-module -name '*.tf' -print0 | xargs -0 perl -pi -e \
+    's/"\$\{var\.([A-Za-z0-9_]+)\}"/var.$1/g'
 fi
 

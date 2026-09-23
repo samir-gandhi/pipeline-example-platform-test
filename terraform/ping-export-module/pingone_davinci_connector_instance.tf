@@ -59,19 +59,19 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne" {
   properties = jsonencode({
     "clientId" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_clientId}"
+      "value" : var.davinci_connection_PingOne_clientId
     },
     "clientSecret" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_clientSecret}"
+      "value" : var.davinci_connection_PingOne_clientSecret
     },
     "envId" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_envId}"
+      "value" : var.davinci_connection_PingOne_envId
     },
     "region" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_region}"
+      "value" : var.davinci_connection_PingOne_region
     }
   })
 }
@@ -87,19 +87,19 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne-0020-Protect" {
   properties = jsonencode({
     "clientId" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_0020_Protect_clientId}"
+      "value" : var.davinci_connection_PingOne_0020_Protect_clientId
     },
     "clientSecret" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_0020_Protect_clientSecret}"
+      "value" : var.davinci_connection_PingOne_0020_Protect_clientSecret
     },
     "envId" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_0020_Protect_envId}"
+      "value" : var.davinci_connection_PingOne_0020_Protect_envId
     },
     "region" : {
       "type" : "string",
-      "value" : "${var.davinci_connection_PingOne_0020_Protect_region}"
+      "value" : var.davinci_connection_PingOne_0020_Protect_region
     }
   })
 }
