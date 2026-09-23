@@ -60,3 +60,6 @@ terraform.rc
 
 # Generated sample-app runtime config (contains DaVinci API key)
 sample-app/global.js
+
+# Demo walkthrough docs (local only)
+DEMO_FEATURE_LIFECYCLE.md
