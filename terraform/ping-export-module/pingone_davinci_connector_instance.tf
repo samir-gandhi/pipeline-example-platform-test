@@ -29,16 +29,6 @@ resource "pingone_davinci_connector_instance" "pingcli__Error-0020-Message" {
 }
 
 
-resource "pingone_davinci_connector_instance" "pingcli__Functions" {
-  environment_id = var.pingone_environment_id
-  name           = "Functions"
-
-  connector = {
-    id = "functionsConnector"
-  }
-}
-
-
 resource "pingone_davinci_connector_instance" "pingcli__Http" {
   environment_id = var.pingone_environment_id
   name           = "Http"
@@ -102,16 +92,6 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne-0020-Protect" {
       "value" : var.davinci_connection_PingOne_0020_Protect_region
     }
   })
-}
-
-
-resource "pingone_davinci_connector_instance" "pingcli__Teleport" {
-  environment_id = var.pingone_environment_id
-  name           = "Teleport"
-
-  connector = {
-    id = "nodeConnector"
-  }
 }
 
 
