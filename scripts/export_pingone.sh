@@ -157,28 +157,16 @@ module "ping-export" {
 WRAPPER
   fi
   # 5. Drop the exporter's connector variable blocks from the root variables
-  #    file; the wrapper no longer passes them. Also comment out the
-  #    pingone_environment_id variable: the wrapper passes the target
-  #    environment ID from Terraform itself
-  #    (pingone_environment.target_environment.id), so a root variable would
-  #    just demand an unused value in CI.
-  if [ -f terraform/ping-export-variables.tf ]; then
+  #    file; the wrapper no longer passes them.
+  if [ -f terraform/ping-export-variables.tf ] && grep -q "davinci_connection_" terraform/ping-export-variables.tf; then
     python3 - <<'PYSTRIP'
 import re
 p = 'terraform/ping-export-variables.tf'
 t = open(p).read()
 t = re.sub(r'# Pingone_davinci_connector_instance Variables\n\n?', '', t)
 t = re.sub(r'variable "davinci_connection_[^"]*" \{.*?\n\}\n\n?', '', t, flags=re.S)
-# Comment out (not delete) so the next export run can still find and strip
-# its duplicate; an active block would break CI with a required unused var.
-t = re.sub(r'(?m)^(variable "pingone_environment_id" \{.*?\n\})\n?',
-           lambda m: ''.join('# ' + l + '\n' for l in m.group(1).splitlines()), t, flags=re.S)
 open(p, 'w').write(t)
 PYSTRIP
-    # Drop the file once nothing but commented-out blocks remain.
-    if ! grep -qv '^#' terraform/ping-export-variables.tf || [ ! -s terraform/ping-export-variables.tf ]; then
-      rm -f terraform/ping-export-variables.tf
-    fi
   fi
   # 6. Drop the envId line + connector lines from the generated tfvars.
   if [ -f terraform/ping-export-terraform.auto.tfvars ]; then
