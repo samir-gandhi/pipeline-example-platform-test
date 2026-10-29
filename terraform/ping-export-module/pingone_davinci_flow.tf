@@ -13,6 +13,7 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
   }
 
   graph_data = {
+    data = jsonencode({})
     renderer = jsonencode({
       "name" : "null"
     })
@@ -49,17 +50,21 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "0mqv2pv49t" = {
           data = {
-            id              = "0mqv2pv49t"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Variables.id
-            connector_id    = "variablesConnector"
-            name            = "Variables"
-            label           = "Variables"
-            capability_name = "saveValue"
-            type            = "trigger"
-            status          = "configured"
-            id_unique       = ""
+            id               = "0mqv2pv49t"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Variables.id
+            connector_id     = "variablesConnector"
+            capability_class = "backend"
+            name             = "Variables"
+            label            = "Variables"
+            capability_name  = "saveValue"
+            type             = "trigger"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
+              "nodeTitle" : {
+                "value" : "User not found"
+              },
               "saveVariables" : {
                 "value" : [
                   {
@@ -89,17 +94,21 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "1jf93tyrvi" = {
           data = {
-            id              = "1jf93tyrvi"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Variables.id
-            connector_id    = "variablesConnector"
-            name            = "Variables"
-            label           = "Variables"
-            capability_name = "saveValue"
-            type            = "trigger"
-            status          = "configured"
-            id_unique       = ""
+            id               = "1jf93tyrvi"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Variables.id
+            connector_id     = "variablesConnector"
+            capability_class = "backend"
+            name             = "Variables"
+            label            = "Variables"
+            capability_name  = "saveValue"
+            type             = "trigger"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
+              "nodeTitle" : {
+                "value" : "Invalid password"
+              },
               "saveVariables" : {
                 "value" : [
                   {
@@ -245,16 +254,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "c9u3f1nyw7" = {
           data = {
-            id              = "c9u3f1nyw7"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Http.id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createSuccessResponse"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "c9u3f1nyw7"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Http.id
+            connector_id     = "httpConnector"
+            capability_class = "backend"
+            name             = "Http"
+            label            = "Http"
+            capability_name  = "createSuccessResponse"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "claimsNameValuePairs" : {
                 "value" : [
@@ -309,16 +319,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "gznrygimzf" = {
           data = {
-            id              = "gznrygimzf"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Http.id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createErrorResponse"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "gznrygimzf"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Http.id
+            connector_id     = "httpConnector"
+            capability_class = "backend"
+            name             = "Http"
+            label            = "Http"
+            capability_name  = "createErrorResponse"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "backgroundColor" : {
                 "value" : "#d0021bff"
@@ -351,16 +362,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "jr1f287nlq" = {
           data = {
-            id              = "jr1f287nlq"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Http.id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createErrorResponse"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "jr1f287nlq"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Http.id
+            connector_id     = "httpConnector"
+            capability_class = "backend"
+            name             = "Http"
+            label            = "Http"
+            capability_name  = "createErrorResponse"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "backgroundColor" : {
                 "value" : "#d0021bff"
@@ -393,16 +405,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "kc7wrmpc93" = {
           data = {
-            id              = "kc7wrmpc93"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Http.id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createErrorResponse"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "kc7wrmpc93"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Http.id
+            connector_id     = "httpConnector"
+            capability_class = "backend"
+            name             = "Http"
+            label            = "Http"
+            capability_name  = "createErrorResponse"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "backgroundColor" : {
                 "value" : "#d0021bff"
@@ -435,16 +448,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "l9q5mxjjtm" = {
           data = {
-            id              = "l9q5mxjjtm"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__PingOne-0020-Protect.id
-            connector_id    = "pingOneRiskConnector"
-            name            = "PingOne Protect"
-            label           = "PingOne Protect"
-            capability_name = "createRiskEvaluation"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "l9q5mxjjtm"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__PingOne-0020-Protect.id
+            connector_id     = "pingOneRiskConnector"
+            capability_class = "backend"
+            name             = "PingOne Protect"
+            label            = "PingOne Protect"
+            capability_name  = "createRiskEvaluation"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "additionalUserProperties" : {
                 "value" : []
@@ -613,16 +627,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "sxdpclcyko" = {
           data = {
-            id              = "sxdpclcyko"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__PingOne-0020-Protect.id
-            connector_id    = "pingOneRiskConnector"
-            name            = "PingOne Protect"
-            label           = "PingOne Protect"
-            capability_name = "updateRiskEvaluation"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "sxdpclcyko"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__PingOne-0020-Protect.id
+            connector_id     = "pingOneRiskConnector"
+            capability_class = "backend"
+            name             = "PingOne Protect"
+            label            = "PingOne Protect"
+            capability_name  = "updateRiskEvaluation"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "completionStatus" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"SUCCESS\"\n      }\n    ]\n  }\n]"
@@ -647,16 +662,17 @@ resource "pingone_davinci_flow" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Pro
         }
         "u6w4ob97dt" = {
           data = {
-            id              = "u6w4ob97dt"
-            node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingcli__Http.id
-            connector_id    = "httpConnector"
-            name            = "Http"
-            label           = "Http"
-            capability_name = "createErrorResponse"
-            type            = "action"
-            status          = "configured"
-            id_unique       = ""
+            id               = "u6w4ob97dt"
+            node_type        = "CONNECTION"
+            connection_id    = pingone_davinci_connector_instance.pingcli__Http.id
+            connector_id     = "httpConnector"
+            capability_class = "backend"
+            name             = "Http"
+            label            = "Http"
+            capability_name  = "createErrorResponse"
+            type             = "action"
+            status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "backgroundColor" : {
                 "value" : "#d0021bff"

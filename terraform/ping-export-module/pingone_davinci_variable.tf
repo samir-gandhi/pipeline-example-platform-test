@@ -20,3 +20,18 @@ resource "pingone_davinci_variable" "pingcli__companyName_flowInstance" {
   min            = 0
   max            = 2000
 }
+
+
+resource "pingone_davinci_variable" "pingcli__sampleCompanyVar_company" {
+  environment_id = var.pingone_environment_id
+  name           = "sampleCompanyVar"
+  context        = "company"
+  data_type      = "string"
+  mutable        = true
+  min            = 0
+  max            = 2000
+
+  value = {
+    string = var.davinci_variable_sampleCompanyVar_value
+  }
+}

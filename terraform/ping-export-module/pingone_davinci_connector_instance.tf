@@ -9,6 +9,16 @@ resource "pingone_davinci_connector_instance" "pingcli__Annotation" {
 }
 
 
+resource "pingone_davinci_connector_instance" "pingcli__Code-0020-Snippet" {
+  environment_id = var.pingone_environment_id
+  name           = "Code Snippet"
+
+  connector = {
+    id = "codeSnippetConnector"
+  }
+}
+
+
 resource "pingone_davinci_connector_instance" "pingcli__Cookie" {
   environment_id = var.pingone_environment_id
   name           = "Cookie"

@@ -13,6 +13,11 @@ output "pingone_davinci_connector_instance__pingcli__Annotation__id" {
   value       = pingone_davinci_connector_instance.pingcli__Annotation.id
 }
 
+output "pingone_davinci_connector_instance__pingcli__Code-0020-Snippet__id" {
+  description = "The id of pingone_davinci_connector_instance pingcli__Code-0020-Snippet"
+  value       = pingone_davinci_connector_instance.pingcli__Code-0020-Snippet.id
+}
+
 output "pingone_davinci_connector_instance__pingcli__Cookie__id" {
   description = "The id of pingone_davinci_connector_instance pingcli__Cookie"
   value       = pingone_davinci_connector_instance.pingcli__Cookie.id

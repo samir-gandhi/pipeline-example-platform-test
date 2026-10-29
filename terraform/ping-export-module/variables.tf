@@ -34,6 +34,7 @@ variable "davinci_connection_PingOne_clientId" {
 variable "davinci_connection_PingOne_clientSecret" {
   type        = string
   description = "clientSecret property for pingcli__PingOne connector"
+  sensitive   = true
 }
 variable "davinci_connection_PingOne_envId" {
   type        = string
@@ -42,4 +43,10 @@ variable "davinci_connection_PingOne_envId" {
 variable "davinci_connection_PingOne_region" {
   type        = string
   description = "region property for pingcli__PingOne connector"
+}
+# Pingone_davinci_variable Variables
+
+variable "davinci_variable_sampleCompanyVar_value" {
+  type        = string
+  description = "Value for DaVinci variable sampleCompanyVar"
 }
