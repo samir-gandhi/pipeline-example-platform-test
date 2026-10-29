@@ -49,4 +49,5 @@ variable "davinci_connection_PingOne_region" {
 variable "davinci_variable_sampleCompanyVar_value" {
   type        = string
   description = "Value for DaVinci variable sampleCompanyVar"
+  default     = "foobar"
 }
