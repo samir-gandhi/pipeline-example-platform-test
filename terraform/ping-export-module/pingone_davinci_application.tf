@@ -1,7 +1,7 @@
 
-resource "pingone_davinci_application" "pingcli__DaVinci-0020-API-0020-Protect-0020-Sample-0020-Application" {
-  environment_id = var.pingone_environment_id
-  name           = "DaVinci API Protect Sample Application"
+resource "pingone_davinci_application" "pingone_sso_connection" {
+  environment_id = pingone_environment.brand.id
+  name           = "PingOne SSO Connection"
 
   api_key = {
     enabled = true
@@ -9,7 +9,7 @@ resource "pingone_davinci_application" "pingcli__DaVinci-0020-API-0020-Protect-0
 
   oauth = {
     grant_types   = ["authorizationCode"]
-    redirect_uris = ["https://127.0.0.1:8080/dashboard.html"]
+    redirect_uris = ["https://auth.pingone.eu/cf069241-3860-4e6b-9450-ac2d7950184c/rp/callback/openid_connect"]
     scopes        = ["openid", "profile"]
   }
 }

@@ -64,3 +64,6 @@ sample-app/global.js
 
 # Demo walkthrough docs (local only)
 DEMO_FEATURE_LIFECYCLE.md
+
+# Raw Terraformer export snapshots (reference only)
+sample-base-export/

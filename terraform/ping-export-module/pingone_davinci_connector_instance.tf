@@ -1,6 +1,6 @@
 
-resource "pingone_davinci_connector_instance" "pingcli__Annotation" {
-  environment_id = var.pingone_environment_id
+resource "pingone_davinci_connector_instance" "annotation" {
+  environment_id = pingone_environment.brand.id
   name           = "Annotation"
 
   connector = {
@@ -9,18 +9,8 @@ resource "pingone_davinci_connector_instance" "pingcli__Annotation" {
 }
 
 
-resource "pingone_davinci_connector_instance" "pingcli__Cookie" {
-  environment_id = var.pingone_environment_id
-  name           = "Cookie"
-
-  connector = {
-    id = "cookieConnector"
-  }
-}
-
-
-resource "pingone_davinci_connector_instance" "pingcli__Error-0020-Message" {
-  environment_id = var.pingone_environment_id
+resource "pingone_davinci_connector_instance" "error_message" {
+  environment_id = pingone_environment.brand.id
   name           = "Error Message"
 
   connector = {
@@ -29,8 +19,28 @@ resource "pingone_davinci_connector_instance" "pingcli__Error-0020-Message" {
 }
 
 
-resource "pingone_davinci_connector_instance" "pingcli__Http" {
-  environment_id = var.pingone_environment_id
+resource "pingone_davinci_connector_instance" "flow_connector" {
+  environment_id = pingone_environment.brand.id
+  name           = "Flow Connector"
+
+  connector = {
+    id = "flowConnector"
+  }
+}
+
+
+resource "pingone_davinci_connector_instance" "functions" {
+  environment_id = pingone_environment.brand.id
+  name           = "Functions"
+
+  connector = {
+    id = "functionsConnector"
+  }
+}
+
+
+resource "pingone_davinci_connector_instance" "http" {
+  environment_id = pingone_environment.brand.id
   name           = "Http"
 
   connector = {
@@ -39,8 +49,8 @@ resource "pingone_davinci_connector_instance" "pingcli__Http" {
 }
 
 
-resource "pingone_davinci_connector_instance" "pingcli__PingOne" {
-  environment_id = var.pingone_environment_id
+resource "pingone_davinci_connector_instance" "pingone" {
+  environment_id = pingone_environment.brand.id
   name           = "PingOne"
 
   connector = {
@@ -57,7 +67,10 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne" {
     },
     "envId" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_envId
+      "value" : pingone_environment.brand.id
+    },
+    "envRegionInfo" : {
+      "value" : null
     },
     "region" : {
       "type" : "string",
@@ -67,36 +80,28 @@ resource "pingone_davinci_connector_instance" "pingcli__PingOne" {
 }
 
 
-resource "pingone_davinci_connector_instance" "pingcli__PingOne-0020-Protect" {
-  environment_id = var.pingone_environment_id
-  name           = "PingOne Protect"
+resource "pingone_davinci_connector_instance" "pingone_authentication" {
+  environment_id = pingone_environment.brand.id
+  name           = "PingOne Authentication"
 
   connector = {
-    id = "pingOneRiskConnector"
+    id = "pingOneAuthenticationConnector"
   }
-  properties = jsonencode({
-    "clientId" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_clientId
-    },
-    "clientSecret" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_clientSecret
-    },
-    "envId" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_envId
-    },
-    "region" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_0020_Protect_region
-    }
-  })
 }
 
 
-resource "pingone_davinci_connector_instance" "pingcli__Variables" {
-  environment_id = var.pingone_environment_id
+resource "pingone_davinci_connector_instance" "teleport" {
+  environment_id = pingone_environment.brand.id
+  name           = "Teleport"
+
+  connector = {
+    id = "nodeConnector"
+  }
+}
+
+
+resource "pingone_davinci_connector_instance" "variables" {
+  environment_id = pingone_environment.brand.id
   name           = "Variables"
 
   connector = {
