@@ -58,8 +58,8 @@ echo "==> Creating repo ${_org}/${_child_repo} (private)"
 cd "$_work"
 # Push over HTTPS with gh's credential helper — avoids needing an SSH key
 # in the agent (gh auth status works even when git@github.com doesn't).
-git config credential.helper '!gh auth git-credential'
 git init -q -b prod
+git config credential.helper '!gh auth git-credential'   # local to this repo
 git add -A
 git commit -q -m "${_business} child business: baseline module + branding + sample app"
 gh repo create "${_org}/${_child_repo}" --private --source=. --remote=origin >/dev/null
