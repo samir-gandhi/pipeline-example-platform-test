@@ -1,5 +1,5 @@
 # The brand environment itself. Everything else in this module provisions
-# inside it — callers (parent root or child repos) pass only identity info.
+# inside it — callers pass only identity info.
 resource "pingone_environment" "brand" {
   name        = var.environment_name
   description = "Brand environment provisioned by the GitOps pipeline"

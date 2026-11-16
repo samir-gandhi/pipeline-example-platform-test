@@ -1,13 +1,13 @@
 
-resource "pingone_davinci_flow_enable" "session_main" {
+resource "pingone_davinci_flow_enable" "pingone_session_main_flow" {
   environment_id = pingone_environment.brand.id
-  flow_id        = pingone_davinci_flow.session_main.id
+  flow_id        = pingone_davinci_flow.pingone_session_main_flow.id
   enabled        = true
 }
 
 
-resource "pingone_davinci_flow_enable" "sign_on_registration" {
+resource "pingone_davinci_flow_enable" "pingone_sign_on_with_registration__password_reset_and_recovery" {
   environment_id = pingone_environment.brand.id
-  flow_id        = pingone_davinci_flow.sign_on_registration.id
+  flow_id        = pingone_davinci_flow.pingone_sign_on_with_registration__password_reset_and_recovery.id
   enabled        = true
 }

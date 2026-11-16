@@ -52,3 +52,14 @@ variable "davinci_connection_PingOne_region" {
   description = "Region code for the DaVinci PingOne connector (e.g. NA)."
   type        = string
 }
+
+
+variable "oidc_redirect_uris" {
+  description = "Redirect URIs for the brand's OIDC application."
+  type        = list(string)
+}
+
+variable "oidc_post_logout_redirect_uris" {
+  description = "Post-logout redirect URIs for the brand's OIDC application."
+  type        = list(string)
+}

@@ -1,5 +1,5 @@
 
-resource "pingone_davinci_flow" "session_main" {
+resource "pingone_davinci_flow" "pingone_session_main_flow" {
   environment_id = pingone_environment.brand.id
   name           = "PingOne Session Main Flow"
   description    = "Imported on Wed Sep 30 2026 15:44:26 GMT+0000 (Coordinated Universal Time)"
@@ -15,7 +15,7 @@ resource "pingone_davinci_flow" "session_main" {
     use_custom_css                   = true
     intermediate_loading_screen_css  = ""
     intermediate_loading_screen_html = ""
-    css_links                        = ["https://assets.pingone.com/ux/end-user-nano/0.1.0-alpha.9/end-user-nano.css", "https://assets.pingone.com/ux/astro-nano/0.1.0-alpha.11/icons.css"]
+    css_links                        = ["https://assets.pingone.com/ux/astro-nano/0.1.0-alpha.11/icons.css", "https://assets.pingone.com/ux/end-user-nano/0.1.0-alpha.9/end-user-nano.css"]
     sensitive_info_fields            = []
   }
 
@@ -28,9 +28,12 @@ resource "pingone_davinci_flow" "session_main" {
       nodes = {
         "9b7cgoyv9z" = {
           data = {
-            id        = "9b7cgoyv9z"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "9b7cgoyv9z"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
             properties = jsonencode({
               "howu8n9hsc" : {
                 "value" : "anyTriggersFalse"
@@ -64,6 +67,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "checkSession"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "authenticationMethodLastUsedIn" : {
                 "value" : 480
@@ -108,6 +112,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "Sign On Success"
@@ -159,6 +164,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "returnSuccessResponseRedirect"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "authenticationMethods" : {
                 "value" : "useCustomAuthenticationMethods"
@@ -266,6 +272,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "PingOne Session Main Flow"
@@ -317,6 +324,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "ofk8hitz8r"
@@ -410,6 +418,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"p1UserId\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"PingOne User Id\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"p1UserId\"\n\t\t},\n\t\t\"authMethod\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"Authentication Method\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"authMethod\"\n\t\t}\n\t}\n}"
@@ -443,6 +452,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "authMethod" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"flow-connector.svg\",\n        \"url\": \"authMethod\",\n        \"data\": \"{{local.z98ot8mzk7.payload.output.authMethod}}\",\n        \"tooltip\": \"{{local.z98ot8mzk7.payload.output.authMethod}}\",\n        \"children\": [\n          {\n            \"text\": \"authMethod\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -473,9 +483,12 @@ resource "pingone_davinci_flow" "session_main" {
         }
         "t0im3zjpdh" = {
           data = {
-            id        = "t0im3zjpdh"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "t0im3zjpdh"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -500,6 +513,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "No Active Session, Go to Sign In"
@@ -556,6 +570,7 @@ resource "pingone_davinci_flow" "session_main" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "Session Exists, Go to Sign On Success"
@@ -621,7 +636,7 @@ resource "pingone_davinci_flow" "session_main" {
               "subFlowId" : {
                 "value" : {
                   "label" : "PingOne Sign On with Registration, Password Reset and Recovery",
-                  "value" : pingone_davinci_flow.sign_on_registration.id
+                  "value" : pingone_davinci_flow.pingone_sign_on_with_registration__password_reset_and_recovery.id
                 }
               },
               "subFlowVersionId" : {
@@ -644,8 +659,11 @@ resource "pingone_davinci_flow" "session_main" {
         }
         "zkumd1hvz" = {
           data = {
-            id        = "zkumd1hvz"
-            node_type = "EVAL"
+            id            = "zkumd1hvz"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -817,7 +835,7 @@ resource "pingone_davinci_flow" "session_main" {
 }
 
 
-resource "pingone_davinci_flow" "sign_on_registration" {
+resource "pingone_davinci_flow" "pingone_sign_on_with_registration__password_reset_and_recovery" {
   environment_id = pingone_environment.brand.id
   name           = "PingOne Sign On with Registration, Password Reset and Recovery"
   description    = "Imported on Wed Sep 30 2026 15:44:25 GMT+0000 (Coordinated Universal Time)"
@@ -833,7 +851,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
     use_custom_css                   = true
     intermediate_loading_screen_css  = ""
     intermediate_loading_screen_html = ""
-    css_links                        = ["https://assets.pingone.com/ux/end-user-nano/0.1.0-alpha.9/end-user-nano.css", "https://assets.pingone.com/ux/astro-nano/0.1.0-alpha.11/icons.css"]
+    css_links                        = ["https://assets.pingone.com/ux/astro-nano/0.1.0-alpha.11/icons.css", "https://assets.pingone.com/ux/end-user-nano/0.1.0-alpha.9/end-user-nano.css"]
     sensitive_info_fields            = []
   }
 
@@ -855,6 +873,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "resetPassword"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "currentPassword" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"currentPassword\",\n        \"data\": \"{{local.yscz5j5r84.payload.output.currentPassword}}\",\n        \"tooltip\": \"{{local.yscz5j5r84.payload.output.currentPassword}}\",\n        \"children\": [\n          {\n            \"text\": \"currentPassword\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -1142,8 +1161,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "222zm3asev" = {
           data = {
-            id        = "222zm3asev"
-            node_type = "EVAL"
+            id            = "222zm3asev"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 2584
@@ -1169,6 +1191,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"resendMessage\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"Resend Message\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"resendMessage\"\n\t\t}\n\t}\n}"
@@ -1202,6 +1225,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "dpo5892st9"
@@ -1232,6 +1256,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"errorDetails\": {\n\t\t\t\"type\": \"object\",\n\t\t\t\"displayName\": \"Error Details\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"errorDetails\"\n\t\t}\n\t}\n}"
@@ -1322,9 +1347,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "458pe5w5g4" = {
           data = {
-            id        = "458pe5w5g4"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "458pe5w5g4"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -1341,9 +1369,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "4bhd6f955t" = {
           data = {
-            id        = "4bhd6f955t"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "4bhd6f955t"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
             properties = jsonencode({
               "9m6zkvt6lt" : {
                 "value" : "anyTriggersFalse"
@@ -1376,6 +1407,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "Forgot Password"
@@ -1493,8 +1525,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "5y9f2f02rr" = {
           data = {
-            id        = "5y9f2f02rr"
-            node_type = "EVAL"
+            id            = "5y9f2f02rr"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1354
@@ -1521,6 +1556,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customHTMLTemplate"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "backgroundColor" : {
                 "value" : "#afd5ffff"
@@ -1607,6 +1643,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "AEqualsMultipleB"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "leftValueA" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"status\",\n        \"data\": \"{{local.dnu7jt3sjz.payload.output.rawResponse.status}}\",\n        \"tooltip\": \"{{local.dnu7jt3sjz.payload.output.rawResponse.status}}\",\n        \"children\": [\n          {\n            \"text\": \"status\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -1650,8 +1687,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "6qs02z56rn" = {
           data = {
-            id        = "6qs02z56rn"
-            node_type = "EVAL"
+            id            = "6qs02z56rn"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 2584
@@ -1668,9 +1708,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "6qtawkceg5" = {
           data = {
-            id        = "6qtawkceg5"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "6qtawkceg5"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -1687,9 +1730,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "6sz8ydjx57" = {
           data = {
-            id        = "6sz8ydjx57"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "6sz8ydjx57"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -1706,9 +1752,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "6w3hc2i5ra" = {
           data = {
-            id        = "6w3hc2i5ra"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "6w3hc2i5ra"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
             properties = jsonencode({
               "p2y85foy0y" : {
                 "value" : "anyTriggersFalse"
@@ -1738,6 +1787,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "Return p1UserId to calling flow"
@@ -1974,6 +2024,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "AEqualsB"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "leftValueA" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"code\",\n        \"data\": \"{{local.dnu7jt3sjz.payload.error.code}}\",\n        \"tooltip\": \"{{local.dnu7jt3sjz.payload.error.code}}\",\n        \"children\": [\n          {\n            \"text\": \"code\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -2081,6 +2132,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "User Registration"
@@ -2271,6 +2323,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customErrorMessage"
             type             = "action"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "errorCallbackSuppress" : {
                 "value" : true
@@ -2316,6 +2369,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "sendRecoveryCode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "identifier" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"id\",\n        \"data\": \"{{local.9hip372enu.payload.output.matchedUser.id}}\",\n        \"tooltip\": \"{{local.9hip372enu.payload.output.matchedUser.id}}\",\n        \"children\": [\n          {\n            \"text\": \"id\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -2486,8 +2540,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "ar0n0chx6u" = {
           data = {
-            id        = "ar0n0chx6u"
-            node_type = "EVAL"
+            id            = "ar0n0chx6u"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -2570,6 +2627,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "yxikxi5l6o"
@@ -2594,9 +2652,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "bznbtmirmf" = {
           data = {
-            id        = "bznbtmirmf"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "bznbtmirmf"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1924
@@ -2679,8 +2740,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "coc8d1r51c" = {
           data = {
-            id        = "coc8d1r51c"
-            node_type = "EVAL"
+            id            = "coc8d1r51c"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 2584
@@ -2757,6 +2821,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "Sign On Success"
@@ -2809,6 +2874,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "AEqualsMultipleB"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "leftValueA" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"buttonValue\",\n        \"data\": \"{{local.65u7m8cm28.payload.output.buttonValue}}\",\n        \"tooltip\": \"{{local.65u7m8cm28.payload.output.buttonValue}}\",\n        \"children\": [\n          {\n            \"text\": \"buttonValue\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -2917,6 +2983,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"success\": {\n\t\t\t\"type\": \"boolean\",\n\t\t\t\"displayName\": \"success\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"success\"\n\t\t}\n\t}\n}"
@@ -2941,9 +3008,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "dqya4pmlto" = {
           data = {
-            id        = "dqya4pmlto"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "dqya4pmlto"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -2960,8 +3030,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "drxy3yocag" = {
           data = {
-            id        = "drxy3yocag"
-            node_type = "EVAL"
+            id            = "drxy3yocag"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -2978,8 +3051,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "dyx8hpj5xg" = {
           data = {
-            id        = "dyx8hpj5xg"
-            node_type = "EVAL"
+            id            = "dyx8hpj5xg"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -3005,6 +3081,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "dpo5892st9"
@@ -3029,8 +3106,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "enx05mvp8c" = {
           data = {
-            id        = "enx05mvp8c"
-            node_type = "EVAL"
+            id            = "enx05mvp8c"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -3056,6 +3136,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"p1UserId\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"PingOne User Id\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"p1UserId\"\n\t\t}\n\t}\n}"
@@ -3089,6 +3170,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "dpo5892st9"
@@ -3167,9 +3249,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "f5gokcacx1" = {
           data = {
-            id        = "f5gokcacx1"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "f5gokcacx1"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
             properties = jsonencode({
               "79aiikhgtb" : {
                 "value" : "anyTriggersFalse"
@@ -3191,8 +3276,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "fdwqk6gwcr" = {
           data = {
-            id        = "fdwqk6gwcr"
-            node_type = "EVAL"
+            id            = "fdwqk6gwcr"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1954
@@ -3209,9 +3297,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "ffka4ssodt" = {
           data = {
-            id        = "ffka4ssodt"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "ffka4ssodt"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -3228,8 +3319,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "flfi8l5inc" = {
           data = {
-            id        = "flfi8l5inc"
-            node_type = "EVAL"
+            id            = "flfi8l5inc"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "79aiikhgtb" : {
                 "value" : "anyTriggersFalse"
@@ -3308,8 +3402,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "fnk14wxu53" = {
           data = {
-            id        = "fnk14wxu53"
-            node_type = "EVAL"
+            id            = "fnk14wxu53"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -3335,6 +3432,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"p1UserId\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"PingOne User Id\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"p1UserId\"\n\t\t},\n\t\t\"email\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"Email\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"email\"\n\t\t},\n\t\t\"resendMessage\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"Resend Message\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"resendMessage\"\n\t\t}\n\t}\n}"
@@ -3359,8 +3457,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "g62tgfk1ui" = {
           data = {
-            id        = "g62tgfk1ui"
-            node_type = "EVAL"
+            id            = "g62tgfk1ui"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1954
@@ -3377,9 +3478,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "gfn4owly2t" = {
           data = {
-            id        = "gfn4owly2t"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "gfn4owly2t"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -3527,6 +3631,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "errorDetails" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"details\",\n        \"data\": \"{{local.dnu7jt3sjz.payload.error.details}}\",\n        \"tooltip\": \"{{local.dnu7jt3sjz.payload.error.details}}\",\n        \"children\": [\n          {\n            \"text\": \"details\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -3559,6 +3664,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "PingOne Sign On with Registration, Password Reset and Recovery"
@@ -3610,6 +3716,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "ofk8hitz8r"
@@ -3634,9 +3741,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "hhnqmctxod" = {
           data = {
-            id        = "hhnqmctxod"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "hhnqmctxod"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -3761,6 +3871,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "verifyEmail"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "identifier" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"teleport.svg\",\n        \"url\": \"p1UserId\",\n        \"data\": \"{{local.g5zcju90lh.payload.output.p1UserId}}\",\n        \"tooltip\": \"{{local.g5zcju90lh.payload.output.p1UserId}}\",\n        \"children\": [\n          {\n            \"text\": \"p1UserId\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -3827,8 +3938,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "m2ey3u07aj" = {
           data = {
-            id        = "m2ey3u07aj"
-            node_type = "EVAL"
+            id            = "m2ey3u07aj"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -3845,9 +3959,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "m4oszi4z7z" = {
           data = {
-            id        = "m4oszi4z7z"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "m4oszi4z7z"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
             properties = jsonencode({
               "9hq9os87cl" : {
                 "value" : "anyTriggersFalse"
@@ -3877,6 +3994,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "updateAnnotationProperties"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "annotation" : {
                 "value" : "Account Verification"
@@ -3919,8 +4037,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "mnljicn2pk" = {
           data = {
-            id        = "mnljicn2pk"
-            node_type = "EVAL"
+            id            = "mnljicn2pk"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "9tfr3o22oe" : {
                 "value" : "always"
@@ -4063,6 +4184,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customErrorMessage"
             type             = "action"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "errorCode" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"Unexpected password state\"\n      }\n    ]\n  }\n]"
@@ -4099,9 +4221,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "noo95xupvp" = {
           data = {
-            id        = "noo95xupvp"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "noo95xupvp"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -4128,6 +4253,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customFunction"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "code" : {
                 "value" : "module.exports = a = async ({ params }) =\u003e {\n    const details = params.details;\n\n    // Check if details is set, otherwise return an empty string\n    if (!details || details.length === 0) {\n        return { 'message': '' };\n    }\n\n    const secondsUntilUnlock = details[0]?.rawResponse?.details?.[0]?.innerError?.secondsUntilUnlock ?? null;\n\n    // If secondsUntilUnlock is not available or greater than 100,000 seconds, return an empty string\n    const formattedTime = (secondsUntilUnlock !== null \u0026\u0026 secondsUntilUnlock \u003c= 100000) \n        ? formatTime(secondsUntilUnlock) \n        : null;\n\n    // Return the unlock message or an empty string\n    const message = formattedTime ? `Your account will unlock in $${formattedTime}.` : '';\n\n    return { 'message': message };\n}\n\n// Function to format time into a human-readable string\nconst formatTime = (seconds) =\u003e {\n    const days = Math.floor(seconds / (24 * 3600));\n    const hours = Math.floor((seconds % (24 * 3600)) / 3600);\n    const minutes = Math.ceil((seconds % 3600) / 60);\n\n    const parts = [];\n    if (days \u003e 0) parts.push(`$${days} day$${days \u003e 1 ? 's' : ''}`);\n    if (hours \u003e 0) parts.push(`$${hours} hour$${hours \u003e 1 ? 's' : ''}`);\n    if (minutes \u003e 0) parts.push(`$${minutes} minute$${minutes \u003e 1 ? 's' : ''}`);\n\n    return parts.join(', ');\n}\n"
@@ -4258,6 +4384,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "dpo5892st9"
@@ -4291,6 +4418,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\"p1UserId\": {\n\t\t\t\"type\": \"string\",\n\t\t\t\"displayName\": \"PingOne User Id\",\n\t\t\t\"preferredControlType\": \"textField\",\n\t\t\t\"enableParameters\": true,\n\t\t\t\"propertyName\": \"p1UserId\"\n\t\t}\n\t}\n}"
@@ -4315,8 +4443,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "ogah3oonyo" = {
           data = {
-            id        = "ogah3oonyo"
-            node_type = "EVAL"
+            id            = "ogah3oonyo"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "9gi11xivkc" : {
                 "value" : "always"
@@ -4348,6 +4479,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customErrorMessage"
             type             = "action"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "errorMessage" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"pingIdentity.svg\",\n        \"url\": \"message\",\n        \"data\": \"{{local.loevzm0utd.payload.error.message}}\",\n        \"tooltip\": \"{{local.loevzm0utd.payload.error.message}}\",\n        \"children\": [\n          {\n            \"text\": \"message\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -4372,8 +4504,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "oprqs443fg" = {
           data = {
-            id        = "oprqs443fg"
-            node_type = "EVAL"
+            id            = "oprqs443fg"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1654
@@ -4400,6 +4535,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customErrorMessage"
             type             = "action"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "errorMessage" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"Passwords do not match.\"\n      }\n    ]\n  }\n]"
@@ -4424,9 +4560,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "p9wjd6i8se" = {
           data = {
-            id        = "p9wjd6i8se"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "p9wjd6i8se"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 3754
@@ -4443,9 +4582,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "pjaqc3d5u5" = {
           data = {
-            id        = "pjaqc3d5u5"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "pjaqc3d5u5"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1384
@@ -4462,8 +4604,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "pmbt2m9ugv" = {
           data = {
-            id        = "pmbt2m9ugv"
-            node_type = "EVAL"
+            id            = "pmbt2m9ugv"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "jmzjeq5oev" : {
                 "value" : "anyTriggersFalse"
@@ -4485,8 +4630,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "pqu44gofi8" = {
           data = {
-            id        = "pqu44gofi8"
-            node_type = "EVAL"
+            id            = "pqu44gofi8"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -4503,8 +4651,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "q11byfsigx" = {
           data = {
-            id        = "q11byfsigx"
-            node_type = "EVAL"
+            id            = "q11byfsigx"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -4530,6 +4681,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "qp6fpnw2hk"
@@ -4713,6 +4865,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n\t\"type\": \"object\",\n\t\"properties\": {\n\t\t\n\t}\n}"
@@ -4790,8 +4943,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "r810hd9rp9" = {
           data = {
-            id        = "r810hd9rp9"
-            node_type = "EVAL"
+            id            = "r810hd9rp9"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -4808,8 +4964,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "rbflsn7loz" = {
           data = {
-            id        = "rbflsn7loz"
-            node_type = "EVAL"
+            id            = "rbflsn7loz"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 424
@@ -4885,6 +5044,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "sendVerificationCode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "identifier" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"teleport.svg\",\n        \"url\": \"p1UserId\",\n        \"data\": \"{{local.g5zcju90lh.payload.output.p1UserId}}\",\n        \"tooltip\": \"{{local.g5zcju90lh.payload.output.p1UserId}}\",\n        \"children\": [\n          {\n            \"text\": \"p1UserId\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -4909,9 +5069,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "rtc1od0nlh" = {
           data = {
-            id        = "rtc1od0nlh"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "rtc1od0nlh"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 2254
@@ -5031,6 +5194,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "ofk8hitz8r"
@@ -5058,8 +5222,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "t3gotwkiy8" = {
           data = {
-            id        = "t3gotwkiy8"
-            node_type = "EVAL"
+            id            = "t3gotwkiy8"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 2584
@@ -5085,6 +5252,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "ofk8hitz8r"
@@ -5109,8 +5277,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "tfmz8ma5qc" = {
           data = {
-            id        = "tfmz8ma5qc"
-            node_type = "EVAL"
+            id            = "tfmz8ma5qc"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -5127,8 +5298,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "tnotjgrxhz" = {
           data = {
-            id        = "tnotjgrxhz"
-            node_type = "EVAL"
+            id            = "tnotjgrxhz"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "886l7dx7um" : {
                 "value" : "anyTriggersFalse"
@@ -5159,6 +5333,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "returnBackToCallingNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeTitle" : {
                 "value" : "Return to Caller"
@@ -5180,8 +5355,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "uc0fpztdsq" = {
           data = {
-            id        = "uc0fpztdsq"
-            node_type = "EVAL"
+            id            = "uc0fpztdsq"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "on0u5wrtq4" : {
                 "value" : "anyTriggersFalse"
@@ -5263,9 +5441,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "uhekj7f0vs" = {
           data = {
-            id        = "uhekj7f0vs"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "uhekj7f0vs"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
             properties = jsonencode({
               "4p1hxq7p98" : {
                 "value" : "anyTriggersFalse"
@@ -5338,8 +5519,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "uqcbtnx4e1" = {
           data = {
-            id        = "uqcbtnx4e1"
-            node_type = "EVAL"
+            id            = "uqcbtnx4e1"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -5356,8 +5540,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "usfhtwgo7x" = {
           data = {
-            id        = "usfhtwgo7x"
-            node_type = "EVAL"
+            id            = "usfhtwgo7x"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
             properties = jsonencode({
               "79aiikhgtb" : {
                 "value" : "anyTriggersFalse"
@@ -5391,6 +5578,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "nodeInstanceId" : {
                 "value" : "273gpisk0t"
@@ -5458,8 +5646,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "vijb9f77kl" = {
           data = {
-            id        = "vijb9f77kl"
-            node_type = "EVAL"
+            id            = "vijb9f77kl"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 2254
@@ -5476,8 +5667,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "vl9mxvo9nn" = {
           data = {
-            id        = "vl9mxvo9nn"
-            node_type = "EVAL"
+            id            = "vl9mxvo9nn"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -5528,8 +5722,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "vsyz2ijfwy" = {
           data = {
-            id        = "vsyz2ijfwy"
-            node_type = "EVAL"
+            id            = "vsyz2ijfwy"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -5546,9 +5743,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "w7jmfry8oc" = {
           data = {
-            id        = "w7jmfry8oc"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "w7jmfry8oc"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 1054
@@ -5565,8 +5765,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "wexx10oniw" = {
           data = {
-            id        = "wexx10oniw"
-            node_type = "EVAL"
+            id            = "wexx10oniw"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -5583,8 +5786,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "ww8avrzf7x" = {
           data = {
-            id        = "ww8avrzf7x"
-            node_type = "EVAL"
+            id            = "ww8avrzf7x"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 754
@@ -5611,6 +5817,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "customFunction"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "code" : {
                 "value" : "// Test to ensure passwords match\nmodule.exports = a = async ({ params }) =\u003e {\n\tconst newPassword = params.newPassword;\n\tconst verifyNewPassword = params.verifyNewPassword;\n\n\tif (!newPassword || !verifyNewPassword || (newPassword !== verifyNewPassword)) {\n\t\treturn false;\n\t}\n\n\treturn { \"success\": true};\n}"
@@ -5664,6 +5871,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "createUser"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "additionalUserProperties" : {
                 "value" : []
@@ -5751,9 +5959,12 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "x1t8u9nxcp" = {
           data = {
-            id        = "x1t8u9nxcp"
-            node_type = "EVAL"
-            label     = "Evaluator"
+            id            = "x1t8u9nxcp"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            label         = "Evaluator"
+            id_unique     = ""
           }
           position = {
             x = 2254
@@ -5780,6 +5991,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name  = "AEqualsMultipleB"
             type             = "trigger"
             status           = "configured"
+            id_unique        = ""
             properties = jsonencode({
               "leftValueA" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"http.svg\",\n        \"url\": \"buttonValue\",\n        \"data\": \"{{local.o4yhix414e.payload.output.buttonValue}}\",\n        \"tooltip\": \"{{local.o4yhix414e.payload.output.buttonValue}}\",\n        \"children\": [\n          {\n            \"text\": \"buttonValue\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -5822,8 +6034,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "xyquoj2bnj" = {
           data = {
-            id        = "xyquoj2bnj"
-            node_type = "EVAL"
+            id            = "xyquoj2bnj"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -5936,6 +6151,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "goToNode"
             type            = "action"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "email" : {
                 "value" : "[\n  {\n    \"children\": [\n      {\n        \"text\": \"\"\n      },\n      {\n        \"text\": \"\"\n      },\n      {\n        \"type\": \"link\",\n        \"src\": \"teleport.svg\",\n        \"url\": \"email\",\n        \"data\": \"{{local.g5zcju90lh.payload.output.email}}\",\n        \"tooltip\": \"{{local.g5zcju90lh.payload.output.email}}\",\n        \"children\": [\n          {\n            \"text\": \"email\"\n          }\n        ]\n      },\n      {\n        \"text\": \"\"\n      }\n    ]\n  }\n]"
@@ -6031,6 +6247,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
             capability_name = "startNode"
             type            = "trigger"
             status          = "configured"
+            id_unique       = ""
             properties = jsonencode({
               "inputSchema" : {
                 "value" : "{\n  \"type\": \"object\",\n  \"properties\": {\n    \n  }\n}"
@@ -6055,8 +6272,11 @@ resource "pingone_davinci_flow" "sign_on_registration" {
         }
         "zkumd1hvz" = {
           data = {
-            id        = "zkumd1hvz"
-            node_type = "EVAL"
+            id            = "zkumd1hvz"
+            node_type     = "EVAL"
+            connection_id = ""
+            name          = ""
+            id_unique     = ""
           }
           position = {
             x = 454
@@ -8351,7 +8571,7 @@ resource "pingone_davinci_flow" "sign_on_registration" {
   }
 
   depends_on = [
-    pingone_davinci_variable.company_logo,
-    pingone_davinci_variable.company_name,
+    pingone_davinci_variable.companylogo_flowinstance,
+    pingone_davinci_variable.companyname_flowinstance,
   ]
 }

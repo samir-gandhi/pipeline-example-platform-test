@@ -1,5 +1,5 @@
 
-resource "pingone_davinci_application" "sso_connection" {
+resource "pingone_davinci_application" "pingone_sso_connection" {
   environment_id = pingone_environment.brand.id
   name           = "PingOne SSO Connection"
 

@@ -10,7 +10,7 @@ output "environment_name" {
 
 output "oidc_app_id" {
   description = "The OIDC application delivering the login experience."
-  value       = pingone_application.oidc_app.id
+  value       = pingone_application.baseline_reference_customer_portal.id
 }
 
 output "key_rotation_policy_id" {
@@ -20,5 +20,5 @@ output "key_rotation_policy_id" {
 
 output "oidc_api_key" {
   description = "DaVinci SSO Connection app API key (sample-app runtime config)."
-  value       = pingone_davinci_application.sso_connection.api_key.value
+  value       = pingone_davinci_application.pingone_sso_connection.api_key.value
 }

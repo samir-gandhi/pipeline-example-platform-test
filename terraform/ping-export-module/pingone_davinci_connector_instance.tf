@@ -1,3 +1,4 @@
+
 resource "pingone_davinci_connector_instance" "annotation" {
   environment_id = pingone_environment.brand.id
   name           = "Annotation"
@@ -6,7 +7,6 @@ resource "pingone_davinci_connector_instance" "annotation" {
     id = "annotationConnector"
   }
 }
-
 
 
 resource "pingone_davinci_connector_instance" "error_message" {
@@ -19,7 +19,6 @@ resource "pingone_davinci_connector_instance" "error_message" {
 }
 
 
-
 resource "pingone_davinci_connector_instance" "flow_connector" {
   environment_id = pingone_environment.brand.id
   name           = "Flow Connector"
@@ -28,7 +27,6 @@ resource "pingone_davinci_connector_instance" "flow_connector" {
     id = "flowConnector"
   }
 }
-
 
 
 resource "pingone_davinci_connector_instance" "functions" {
@@ -41,7 +39,6 @@ resource "pingone_davinci_connector_instance" "functions" {
 }
 
 
-
 resource "pingone_davinci_connector_instance" "http" {
   environment_id = pingone_environment.brand.id
   name           = "Http"
@@ -50,7 +47,6 @@ resource "pingone_davinci_connector_instance" "http" {
     id = "httpConnector"
   }
 }
-
 
 
 resource "pingone_davinci_connector_instance" "pingone" {
@@ -84,7 +80,6 @@ resource "pingone_davinci_connector_instance" "pingone" {
 }
 
 
-
 resource "pingone_davinci_connector_instance" "pingone_authentication" {
   environment_id = pingone_environment.brand.id
   name           = "PingOne Authentication"
@@ -95,7 +90,6 @@ resource "pingone_davinci_connector_instance" "pingone_authentication" {
 }
 
 
-
 resource "pingone_davinci_connector_instance" "teleport" {
   environment_id = pingone_environment.brand.id
   name           = "Teleport"
@@ -104,7 +98,6 @@ resource "pingone_davinci_connector_instance" "teleport" {
     id = "nodeConnector"
   }
 }
-
 
 
 resource "pingone_davinci_connector_instance" "variables" {
