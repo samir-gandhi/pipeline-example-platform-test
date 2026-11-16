@@ -1,0 +1,171 @@
+name: Feature Deploy Push
+on:
+  push:
+    branches:
+      - '**'
+      # Skip Dependabot's auto-generated branches: no deployable config, and
+      # the branch name would make an invalid environment name/state key.
+      - '!dependabot/**'
+    paths:
+      - 'terraform/**'
+      - 'scripts/**'
+      - 'GNUmakefile'
+      - '.github/**'
+      - 'secretstemplate'
+  # Branch creation with no new commits fires no push event, so provision the
+  # feature environment here instead (demo step 1: create branch, env appears).
+  create:
+permissions:
+  contents: read
+
+jobs:
+  provision:
+    if: ${{ github.event_name == 'create' && github.event.ref_type == 'branch' && github.event.ref != 'qa' && github.event.ref != 'prod' && !startsWith(github.event.ref, 'dependabot/') }}
+    name: Create Feature Environment
+    concurrency:
+      group: terraform-${{ github.event.ref }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TERRAFORM_ENV_BASE64: ${{ secrets.TERRAFORM_ENV_BASE64 }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        ref: ${{ github.event.ref }}
+    - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+    - run: |-
+        umask 077
+        _secrets_file=$(mktemp)
+        trap 'rm -f "${_secrets_file}"' EXIT
+        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
+        . "${_secrets_file}"
+        git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+        _tfdir=terraform
+        _branch="${{ github.event.ref }}"
+        export TF_VAR_pingone_environment_name="${_branch}"
+        terraform -chdir="${_tfdir}" init -input=false \
+          -backend-config="bucket=${TF_VAR_tf_state_bucket}" \
+          -backend-config="region=${TF_VAR_tf_state_region}" \
+          -backend-config="key=${TF_VAR_tf_state_key_prefix}/dev/${_branch}/terraform.tfstate"
+        echo "***Provisioning feature environment for ${_branch}***"
+        terraform -chdir="${_tfdir}" apply --auto-approve -input=false
+
+  fmt:
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+    - name: fmt-check
+      run: |
+        terraform fmt -recursive -check .
+
+  lint:
+    if: ${{ github.event_name == 'push' }}
+    needs: [fmt]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - uses: terraform-linters/setup-tflint@8093687ecc9dcbfa88d07c103ad4176739a7287e # v4.1.0
+      name: Setup TFLint
+      with:
+        tflint_version: v0.64.0
+
+    - name: tflint
+      run: |
+        echo "***Running terraform lint***"
+        tflint --recursive
+
+  validate:
+    if: ${{ github.event_name == 'push' }}
+    needs: [lint]
+    name: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TERRAFORM_ENV_BASE64: ${{ secrets.TERRAFORM_ENV_BASE64 }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+    - run: |-
+        umask 077
+        _secrets_file=$(mktemp)
+        trap 'rm -f "${_secrets_file}"' EXIT
+        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
+        . "${_secrets_file}"
+        git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+        _tfdir=terraform
+        _branch=$(echo "${GITHUB_REF}" | sed -e "s#refs/heads/##g")
+        export TF_VAR_pingone_environment_name="${_branch}"
+        case $_branch in
+          prod)
+            _stateKey="${TF_VAR_tf_state_key_prefix}/prod/terraform.tfstate"
+            ;;
+          qa)
+            _stateKey="${TF_VAR_tf_state_key_prefix}/qa/terraform.tfstate"
+            ;;
+          *)
+            _stateKey="${TF_VAR_tf_state_key_prefix}/dev/${_branch}/terraform.tfstate"
+            ;;
+        esac
+        terraform -chdir="${_tfdir}" init -input=false \
+          -backend-config="bucket=${TF_VAR_tf_state_bucket}" \
+          -backend-config="region=${TF_VAR_tf_state_region}" \
+          -backend-config="key=${_stateKey}"
+        echo "***Running terraform validate***"
+        terraform -chdir="${_tfdir}" validate
+
+  deploy:
+    if: ${{ github.event_name == 'push' && !contains(github.event.head_commit.message || '', '[skip ci]') && github.ref_type == 'branch' }}
+    name: Deploy
+    needs: [validate]
+    concurrency:
+      group: terraform-${{ github.ref_name }}
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TERRAFORM_ENV_BASE64: ${{ secrets.TERRAFORM_ENV_BASE64 }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+    - uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+    - run: |-
+        umask 077
+        _secrets_file=$(mktemp)
+        trap 'rm -f "${_secrets_file}"' EXIT
+        printf '%s' "${TERRAFORM_ENV_BASE64}" | base64 -d > "${_secrets_file}"
+        . "${_secrets_file}"
+        git config --global url."https://x-access-token:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+        _tfdir=terraform
+        _branch=$(echo "${GITHUB_REF}" | sed -e "s#refs/heads/##g")
+        export TF_VAR_pingone_environment_name="${_branch}"
+        case $_branch in
+          prod)
+            _stateKey="${TF_VAR_tf_state_key_prefix}/prod/terraform.tfstate"
+            ;;
+          qa)
+            _stateKey="${TF_VAR_tf_state_key_prefix}/qa/terraform.tfstate"
+            ;;
+          *)
+            _stateKey="${TF_VAR_tf_state_key_prefix}/dev/${_branch}/terraform.tfstate"
+            ;;
+        esac
+        terraform -chdir="${_tfdir}" init -input=false \
+          -backend-config="bucket=${TF_VAR_tf_state_bucket}" \
+          -backend-config="region=${TF_VAR_tf_state_region}" \
+          -backend-config="key=${_stateKey}"
+        echo "***Running terraform apply***"
+        terraform -chdir="${_tfdir}" apply --auto-approve -input=false
+        # Publish the sample app for every branch env; each branch has its own
+        # CloudFront distro + bucket (pipeline-example-sample-app-__BUSINESS__).
+        aws s3 sync sample-app/ "s3://pipeline-example-sample-app-__BUSINESS__/" \
+          --region "${TF_VAR_tf_state_region}" --delete \
+          --cache-control "no-cache"
