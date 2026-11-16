@@ -16,7 +16,7 @@
       <div class="logo"><img src="images/logo.png" width="300" alt="Ping Identity" /></div>
       <div class="header-text">
         <div class="title">Developer Experience</div>
-        <div class="subtitle">PingOne DaVinci API Protect Sample App</div>
+        <div class="subtitle">PingOne Branded Sign-On Sample App</div>
       </div>
     </div>
     <div class="content">
@@ -24,99 +24,43 @@
       <div id="error-msg"></div>
       <br>
       <div id="container">
-        <form id="registrationForm">
-          <input type="email" required id="email" name="email" placeholder="Email Address" />
-          <input type="password" required id="password" name="password" placeholder="Password" />
-          <button type="submit" id="registration" class="btn">Submit</button>
-        </form>
-    </div>
+        <p>Click below to sign in or register. Authentication is delivered by the
+        environment's branded sign-on experience (DaVinci flow policy assigned to
+        the application).</p>
+        <button id="login" class="btn">Sign In / Register</button>
+      </div>
     </div>
   </section>
   <script src="global.js"></script>
-  <script src="https://assets.pingone.com/davinci/latest/davinci.js"></script>
-  <!-- PingOne Protect Signals SDK -->
-  <script type="text/javascript" src="https://assets.pingone.com/signals/web-sdk/5.5.2/signals-sdk.js" defer></script>
   <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', async () => {
-      const companyId = window._env_.companyId;
-      const dvApiKey = window._env_.apiKey; 
-      const policyId = window._env_.policyId;
-      const pingOneEnvId = window._env_.pingOneEnvId;
-      const pingOneDomain = window._env_.pingOneDomain; // PingOne Domain based on region
+    document.addEventListener('DOMContentLoaded', () => {
+      const envId = window._env_.pingOneEnvId;
+      const domain = window._env_.pingOneDomain; // PingOne Domain based on region
+      const clientId = window._env_.oidcClientId;
+      const redirectUri = window._env_.redirectUri;
 
-      function onPingOneSignalsReady(callback) {
-          if (window['_pingOneSignalsReady']) {
-              callback();
-          } else {
-              document.addEventListener('PingOneSignalsReadyEvent', callback);
-          }
-        }
+      document.getElementById('login').addEventListener('click', () => {
+        // Redirect to the PingOne application's authorization endpoint. The
+        // app's assigned DaVinci flow policy renders the environment-branded
+        // sign-on / registration forms, then returns to redirectUri with ?code=...
+        const authorizeUrl = 'https://auth.pingone.' + domain + '/' + envId + '/as/authorize'
+          + '?response_type=code'
+          + '&client_id=' + encodeURIComponent(clientId)
+          + '&redirect_uri=' + encodeURIComponent(redirectUri)
+          + '&scope=openid profile email';
+        window.location.assign(authorizeUrl);
+      });
 
-        onPingOneSignalsReady(function () {
-          _pingOneSignals.init({
-            // Set to `true` if using the Behavior Predictors (Bot Detect)
-            behavioralDataCollection: true
-          }).then(function () {
-              console.log("PingOne Signals initialized successfully");
-          }).catch(function (e) {
-              console.error("SDK Init failed", e);
-          });
-        });
-
-        const riskData = await _pingOneSignals.getData()
-          .then(function (result) {
-            console.log("get data completed: " + result)
-            return result;
-          }).catch(function (e) {
-              console.error('getData Error!', e);
-        });
-
-      document.getElementById('registrationForm').addEventListener('submit', function (event) { event.preventDefault(); startDVFlow();});
-
-      function startDVFlow(){
-        const dvStartUrl =
-            'https://orchestrate-api.pingone.' + pingOneDomain + '/v1/company/' +
-            companyId + '/policy/' + policyId + '/start';
-
-            console.log("url", dvStartUrl);
-
-            //*** Add the API Key from your DaVinci application. ***/
-            var headers = new Headers();
-            headers.append('X-SK-API-KEY', dvApiKey);
-            headers.append('Content-Type', 'application/json');
-
-            //*** Add parameters required in Davinci flow input schema. ***/
-            var body = {
-              email: document.getElementById('email').value,
-              password: document.getElementById('password').value,
-              riskData: riskData
-            }
-
-            var payload = JSON.stringify(body);
-            
-            var requestOptions = {
-              method: 'POST',
-              headers: headers,
-              redirect: 'manual',
-              body: payload
-            };
-
-            fetch(dvStartUrl, requestOptions)
-              .then(response => response.json())
-              .then((responseData) => {
-                if (responseData.success) {
-                  console.log("responseData", responseData);
-                  // Set email and the risk response in sessionStorage so it can be displayed on dashboard
-                  sessionStorage.setItem('email', responseData.parameters.email);
-                  sessionStorage.setItem('riskResponse', JSON.stringify(responseData.additionalProperties));
-                  window.location.assign(window.location.origin + '/dashboard.html');
-                } else {
-                  document.getElementById("error-msg").innerHTML = responseData?.additionalProperties.message;
-                }
-              })
-              .catch(error => console.log(error));
-      }      
-    })
+      // Returning from the authorization redirect? Hand off to the dashboard.
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('code')) {
+        window.location.assign(window.location.origin + '/dashboard.html?' + params.toString());
+      }
+      if (params.get('error')) {
+        document.getElementById('error-msg').innerText =
+          'Sign-on error: ' + params.get('error') + ' — ' + (params.get('error_description') || '');
+      }
+    });
   </script>
 </body>
 </html>
