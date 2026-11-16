@@ -67,3 +67,4 @@ DEMO_FEATURE_LIFECYCLE.md
 
 # Raw Terraformer export snapshots (reference only)
 sample-base-export/
+templates/child/sample-app/certs/key.pem
