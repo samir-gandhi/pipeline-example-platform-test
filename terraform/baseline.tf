@@ -18,6 +18,6 @@ module "baseline" {
   davinci_connection_PingOne_clientSecret = var.pingone_client_secret
   davinci_connection_PingOne_region       = var.pingone_client_region_code
 
-  oidc_redirect_uris = local.sample_app_host != null ? ["https://${local.sample_app_host}/index.html"] : ["https://127.0.0.1:8080/index.html"]
+  oidc_redirect_uris             = local.sample_app_host != null ? ["https://${local.sample_app_host}/index.html"] : ["https://127.0.0.1:8080/index.html"]
   oidc_post_logout_redirect_uris = ["https://127.0.0.1:8080/index.html"]
 }
