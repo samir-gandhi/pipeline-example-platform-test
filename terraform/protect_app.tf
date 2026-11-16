@@ -48,9 +48,8 @@ resource "pingone_application_role_assignment" "protect_worker_environment_admin
 
 
 
-# Generated sample-app runtime config (gitignored; contains the API key).
+# Generated sample-app runtime config (gitignored; contains the client secret).
 resource "local_file" "env_config" {
   filename = "${path.module}/../sample-app/global.js"
-  content  = "window._env_ = {\n  pingOneDomain: \"${lower(var.pingone_client_region_code)}\",\n  pingOneEnvId: \"${module.baseline.environment_id}\",\n  companyId: \"${module.baseline.environment_id}\",\n  apiKey: \"${module.baseline.oidc_api_key}\",\n};"
-
+  content  = "window._env_ = {\n  pingOneDomain: \"${lower(var.pingone_client_region_code)}\",\n  pingOneEnvId: \"${module.baseline.environment_id}\",\n  oidcClientId: \"${module.baseline.oidc_client_id}\",\n  oidcClientSecret: \"${module.baseline.portal_client_secret}\",\n  redirectUri: \"${local.sample_app_host != null ? "https://${local.sample_app_host}/index.html" : "https://127.0.0.1:8080/index.html"}\",\n};"
 }
