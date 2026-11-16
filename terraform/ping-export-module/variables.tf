@@ -14,11 +14,6 @@ variable "environment_type" {
   default     = "SANDBOX"
 }
 
-variable "region_code" {
-  description = "PingOne region code for connector wiring (NA|EU|AP|AU|CA)."
-  type        = string
-}
-
 variable "branding" {
   description = "Brand-specific branding theme, injected into the shared flows."
   type = object({

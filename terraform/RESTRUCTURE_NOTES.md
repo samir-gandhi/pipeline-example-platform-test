@@ -1,29 +1,30 @@
 # INGR restructure: root module mirror shape
 
-Target terraform/ layout (parent and every child identical):
+Actual terraform/ layout (parent and every child identical):
 
   terraform/
     providers.tf               (auth + region from localsecrets)
-    environment.tf             (pingone_environment, key rotation policy)
+    environment.tf             (role data sources + group role assignments)
     branding.tf                (pingone_branding_theme - environment-specific)
-    baseline.tf                (module "baseline" -> git:://parent//modules/pingone-brand-baseline?ref=<tag>)
-    ping-export-module.tf      (module "ping-export" -> ./ping-export-module, continuous export target)
-    ping-export-module/        (exported resources land here; branding excluded via --exclude-resources)
+    baseline.tf                (module "baseline" -> ./ping-export-module locally;
+                                child repos: git:://parent//terraform/ping-export-module?ref=<tag>)
+    ping-export-module/        (THE baseline module: env + all non-env-specific config;
+                                continuous export target, branding excluded via --exclude-resources)
     sample_app.tf              (AWS hosting - optional per env)
-    extras.tf                  (agreement, notification templates, language - env-specific polish)
+    protect_app.tf             (worker apps + global.js for sample app)
 
-## What moves into the baseline module (already there)
-- DaVinci flows (Sign On+Registration, Session Main) + deploy/enable + forms
+## In the baseline module (terraform/ping-export-module)
+- pingone_environment (brand env: SSO/MFA/DaVinci services) + key rotation policy
+- DaVinci flows + deploy/enable + forms (IRCO Starter Kit)
 - DaVinci SSO Connection app + flow policy + assignment to the brand OIDC app
 - connector instances, DaVinci variables (companyLogo/Name = branding inject)
-- population (theme-wired), OIDC web app, key rotation policy
+- population (Standard password policy lookup), OIDC web app, portal secret
 
 ## What stays per-environment (root)
-- pingone_environment itself (Q1: child repos create their own env)
 - branding theme (the whole point of the demo)
-- AWS sample-app hosting, agreement, notification templates, language
+- AWS sample-app hosting, worker apps, global.js
 
 ## Export flow
-pingcli-terraformer export --exclude-resources pingone_branding_theme \
+pingcli-terraformer export --exclude-resources 'regex:pingone_branding_theme' \
   -> writes ping-export-module/ (flows, forms, connectors, apps)
-root module picks it up; branding stays hand-managed at root.
+Parent consumes locally; children consume the same module via git:: tag.

@@ -7,7 +7,6 @@ module "baseline" {
   environment_name = var.pingone_environment_name
   license_id       = var.pingone_license_id
   environment_type = var.pingone_environment_type
-  region_code      = var.pingone_client_region_code
 
   branding = {
     name     = var.pingone_environment_name
