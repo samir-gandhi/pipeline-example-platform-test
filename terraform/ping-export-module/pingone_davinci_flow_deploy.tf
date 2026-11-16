@@ -1,9 +1,19 @@
 
-resource "pingone_davinci_flow_deploy" "pingcli__PingOne-0020-DaVinci-0020-API-0020-Protect-0020-Example" {
-  environment_id = var.pingone_environment_id
-  flow_id        = pingone_davinci_flow.pingcli__PingOne-0020-DaVinci-0020-API-0020-Protect-0020-Example.id
+resource "pingone_davinci_flow_deploy" "session_main" {
+  environment_id = pingone_environment.brand.id
+  flow_id        = pingone_davinci_flow.session_main.id
 
   deploy_trigger_values = {
-    deployed_version = pingone_davinci_flow.pingcli__PingOne-0020-DaVinci-0020-API-0020-Protect-0020-Example.current_version
+    deployed_version = pingone_davinci_flow.session_main.current_version
+  }
+}
+
+
+resource "pingone_davinci_flow_deploy" "sign_on_registration" {
+  environment_id = pingone_environment.brand.id
+  flow_id        = pingone_davinci_flow.sign_on_registration.id
+
+  deploy_trigger_values = {
+    deployed_version = pingone_davinci_flow.sign_on_registration.current_version
   }
 }

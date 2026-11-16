@@ -1,45 +1,54 @@
-variable "pingone_environment_id" {
+variable "environment_name" {
+  description = "PingOne environment name to create (the brand environment)."
   type        = string
-  description = "The PingOne environment ID to configure DaVinci resources in"
-
-  validation {
-    condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.pingone_environment_id))
-    error_message = "The PingOne Environment ID must be a valid PingOne resource ID (UUID format)."
-  }
 }
 
-# Pingone_davinci_connector_instance Variables
-
-variable "davinci_connection_PingOne_0020_Protect_clientId" {
+variable "license_id" {
+  description = "PingOne license ID the environment is created under."
   type        = string
-  description = "clientId property for pingcli__PingOne-0020-Protect connector"
 }
-variable "davinci_connection_PingOne_0020_Protect_clientSecret" {
+
+variable "environment_type" {
+  description = "PingOne environment type (SANDBOX or PRODUCTION)."
   type        = string
-  description = "clientSecret property for pingcli__PingOne-0020-Protect connector"
+  default     = "SANDBOX"
+}
+
+variable "region_code" {
+  description = "PingOne region code for connector wiring (NA|EU|AP|AU|CA)."
+  type        = string
+}
+
+variable "branding" {
+  description = "Brand-specific branding theme, injected into the shared flows."
+  type = object({
+    name               = string
+    template           = optional(string, "focus")
+    body_text_color    = optional(string, "#000000")
+    button_color       = optional(string, "#000000")
+    button_text_color  = optional(string, "#ffffff")
+    link_text_color    = optional(string, "#000000")
+    heading_text_color = optional(string, "#000000")
+    card_color         = optional(string, "#ffffff")
+    link_color         = optional(string)
+    background_color   = optional(string, "#ffffff")
+    logo_url           = string
+    background_url     = optional(string)
+  })
+}
+
+variable "davinci_connection_PingOne_clientId" {
+  description = "Worker application client ID the DaVinci PingOne connector uses to call the brand environment's API."
+  type        = string
+}
+
+variable "davinci_connection_PingOne_clientSecret" {
+  description = "Worker application client secret for the DaVinci PingOne connector."
+  type        = string
   sensitive   = true
 }
-variable "davinci_connection_PingOne_0020_Protect_envId" {
-  type        = string
-  description = "envId property for pingcli__PingOne-0020-Protect connector"
-}
-variable "davinci_connection_PingOne_0020_Protect_region" {
-  type        = string
-  description = "region property for pingcli__PingOne-0020-Protect connector"
-}
-variable "davinci_connection_PingOne_clientId" {
-  type        = string
-  description = "clientId property for pingcli__PingOne connector"
-}
-variable "davinci_connection_PingOne_clientSecret" {
-  type        = string
-  description = "clientSecret property for pingcli__PingOne connector"
-}
-variable "davinci_connection_PingOne_envId" {
-  type        = string
-  description = "envId property for pingcli__PingOne connector"
-}
+
 variable "davinci_connection_PingOne_region" {
+  description = "Region code for the DaVinci PingOne connector (e.g. NA)."
   type        = string
-  description = "region property for pingcli__PingOne connector"
 }
