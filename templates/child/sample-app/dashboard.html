@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signed In — Ping Identity Integration Example</title>
+  <link rel="shortcut icon" type="/image/x-icon" href="/images/favicon.ico">
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <img class="background" src="/images/background.png" alt="Background" />
+  <section class="container">
+    <div class="header">
+      <div class="logo"><img src="images/logo.png" width="300" alt="Ping Identity" /></div>
+      <div class="header-text">
+        <div class="title">Developer Experience</div>
+        <div class="subtitle">PingOne Branded Sign-On Sample App</div>
+      </div>
+    </div>
+    <div class="content">
+      <h1 id="dashboard-title">Signed In!</h1>
+      <p id="email-address"></p>
+      <br>
+      <button id="logout" class="btn">Log Out</button>
+    </div>
+  </section>
+  <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', async () => {
+      const envId = window._env_.pingOneEnvId;
+      const domain = window._env_.pingOneDomain;
+      const clientId = window._env_.oidcClientId;
+      const clientSecret = window._env_.oidcClientSecret;
+      const redirectUri = window._env_.redirectUri;
+
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      if (!code) {
+        document.getElementById('dashboard-title').innerText = 'No authorization code — sign in first.';
+      } else {
+        // Exchange the authorization code for tokens (public demo: client
+        // secret handed to the SPA via generated runtime config).
+        const tokenResp = await fetch('https://auth.pingone.' + domain + '/' + envId + '/as/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: redirectUri
+          })
+        });
+        if (clientSecret) {
+          // CLIENT_SECRET_BASIC — re-issue with the Authorization header.
+          const auth = btoa(clientId + ':' + clientSecret);
+          const r2 = await fetch('https://auth.pingone.' + domain + '/' + envId + '/as/token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': 'Basic ' + auth },
+            body: new URLSearchParams({
+              grant_type: 'authorization_code',
+              code: code,
+              redirect_uri: redirectUri
+            })
+          });
+          const tokens = await r2.json();
+          renderTokens(tokens);
+        } else {
+          const tokens = await tokenResp.json();
+          renderTokens(tokens);
+        }
+      }
+
+      function renderTokens(tokens) {
+        if (tokens.id_token) {
+          // Decode the ID token payload for a friendly hello.
+          const payload = JSON.parse(atob(tokens.id_token.split('.')[1]));
+          document.getElementById('email-address').innerText =
+            'Signed in as ' + (payload.email || payload.preferred_username || payload.sub);
+          sessionStorage.setItem('id_token', tokens.id_token);
+          sessionStorage.setItem('access_token', tokens.access_token || '');
+        } else {
+          document.getElementById('dashboard-title').innerText = 'Token exchange failed';
+          document.getElementById('email-address').innerText = JSON.stringify(tokens);
+        }
+      }
+
+      document.getElementById('logout').addEventListener('click', () => {
+        sessionStorage.clear();
+        window.location.assign(window.location.origin + '/');
+      });
+    });
+  </script>
+</body>
+</html>
