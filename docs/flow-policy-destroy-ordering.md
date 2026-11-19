@@ -1,113 +1,165 @@
-# Terraform ordering pitfall: swapping a DaVinci flow behind an application flow policy
+# Best practices: promoting flows behind application flow policies
 
-> Audience: anyone maintaining `terraform/ping-export-module` or promoting
-> baseline module changes across environments.
-> Symptom: `CONSTRAINT_VIOLATION — This Flow is in a Application Flow Policy`
-> during `terraform apply` when a flow is removed from configuration.
+These guidelines describe how to manage the lifecycle of DaVinci flows
+that are distributed through application flow policies, using the
+PingOne Terraform provider. They explain a Terraform ordering pitfall
+that surfaces as a `CONSTRAINT_VIOLATION` during `terraform apply`,
+when to expect it, and how to structure your promotion workflow around
+it. These guidelines are not intended to educate on the general use of
+Terraform or the provider's day-to-day workflow.
 
-## The scenario
+## Replacing a flow that is distributed by an application flow policy
 
-The baseline module ships a sign-on experience: a DaVinci flow, a flow
-policy that distributes it, and the policy assigned to the brand OIDC
-application. Version 1 of the module rendered sign-on with inline HTML
-template nodes; version 2 replaces it with a flow that renders the
-environment's PingOne forms.
+An application flow policy distributes one or more DaVinci flows to an
+application's sign-on experience. Replacing the distributed flow — for
+example, moving from a flow that renders inline HTML template nodes to
+one that renders the environment's PingOne forms — is the most common
+way to encounter this pitfall.
 
-Environment state before the upgrade (v0.1.0):
+Consider a module that ships a sign-on experience using three
+resources:
+
+```terraform
+resource "pingone_davinci_flow" "sign_on_flow_v1" {
+  ...
+}
+
+resource "pingone_davinci_application_flow_policy" "sign_on_policy" {
+  ...
+  flow_distributions = [
+    {
+      id      = pingone_davinci_flow.sign_on_flow_v1.id
+      version = -1
+      weight  = 100
+    }
+  ]
+}
+
+resource "pingone_application_flow_policy_assignment" "portal" {
+  ...
+  flow_policy_id = pingone_davinci_application_flow_policy.sign_on_policy.id
+}
+```
+
+The next module version replaces the flow with a form-based
+experience. The change removes the old flow resource and repoints the
+policy in the same apply:
+
+```terraform
+resource "pingone_davinci_flow" "sign_on_flow_v2" {
+  ...
+}
+
+resource "pingone_davinci_application_flow_policy" "sign_on_policy" {
+  ...
+  flow_distributions = [
+    {
+      id      = pingone_davinci_flow.sign_on_flow_v2.id
+      version = -1
+      weight  = 100
+    }
+  ]
+}
+
+# pingone_davinci_flow.sign_on_flow_v1 is no longer in configuration,
+# so Terraform plans its destroy.
+```
+
+One `terraform apply` plans a create, an update, and a destroy. The
+destroy can fail with:
 
 ```
-pingone_davinci_flow.pingone_session_main_flow                (deployed, enabled)
-pingone_davinci_application_flow_policy.sign_on_and_registration
-  └── flow_distributions = [pingone_session_main_flow.id]     (weight 100)
-pingone_application_flow_policy_assignment (portal app ← policy, priority 1)
+Error when calling `DeleteFlowById`
+Code:     CONSTRAINT_VIOLATION
+Message:  This Flow is in a Application Flow Policy
 ```
 
-Configuration after the upgrade (v0.2.0):
+## Why the destroy can fail
 
+Terraform sequences work using edges derived from the current
+configuration only. Two edges exist in this apply:
+
+- The policy references `pingone_davinci_flow.sign_on_flow_v2.id`, so
+  Terraform creates the new flow before updating the policy.
+- The policy no longer references `sign_on_flow_v1`. Because the
+  removed resource contributes no configuration, **no edge can exist
+  between the policy update and the old flow's destroy** — a destroyed
+  resource carries no config to attach a dependency to.
+
+With no edge between them, Terraform treats the policy update and the
+flow destroy as independent and may run them in parallel. If the flow
+destroy reaches the PingOne API while the policy still references the
+flow, the request is rejected with `CONSTRAINT_VIOLATION`, the apply
+errors, and the flow remains in state.
+
+The dependency required here is *do not destroy the old flow until the
+policy stops referencing it* — but the policy stops referencing it as a
+consequence of an update performed in the same apply. Terraform's graph
+cannot express destroy-after-unrelated-update: `depends_on` and direct
+references only create edges for resources present in configuration,
+and `create_before_destroy` applies to replacement, not removal.
+
+## Not best practice
+
+Relying on apply ordering that Terraform does not guarantee:
+
+```terraform
+# Removing the flow and repointing the policy in one apply and hoping
+# the destroy runs after the update. No edge exists between them, so
+# the API may reject the destroy mid-apply.
 ```
-pingone_davinci_flow.irco_starter_kit          ← new (create)
-pingone_davinci_application_flow_policy.sign_on_and_registration
-  └── flow_distributions = [pingone_davinci_flow.irco_starter_kit.id]  (update)
-pingone_davinci_flow.pingone_session_main_flow ← gone from config (destroy)
-```
 
-One `terraform apply` plans: 1 create, 1 update, 1 destroy. Naively this
-should work — but the destroy fails.
+## Best practice
 
-## Why the destroy fails
+Ping Identity recommends structuring the promotion so the apply tolerates
+the two-phase transition, or phasing the removal across applies.
 
-Terraform orders work using **edges from the current configuration only**.
-Walk the graph it builds for this apply:
+Retry the apply once in the pipeline. The failure is deterministically
+self-healing: the first apply updates the policy and removes the
+reference, so the second apply's destroy finds no constraint.
 
-| Edge | Source | Consequence |
-|---|---|---|
-| `flow_policy → irco_starter_kit` | policy references `pingone_davinci_flow.irco_starter_kit.id` | create the new flow **before** updating the policy ✓ |
-| *(none)* | `session_main_flow` | The flow's config block was **removed** — a destroyed resource contributes no config, so **no edge can exist from the policy to it** |
-
-With no edge between *update policy* and *destroy old flow*, Terraform
-treats them as independent and runs them **in parallel**. The API then
-races:
-
-- if the destroy lands first, the apply succeeds;
-- if the policy still references the flow when the destroy arrives,
-  PingOne rejects it: `CONSTRAINT_VIOLATION — This Flow is in a
-  Application Flow Policy` — and the apply errors, leaving the flow in
-  state and environment.
-
-The dependency we need is *"don't destroy X until Y stops referencing
-X"* — but Y stops referencing X as a consequence of an update executed
-in the same apply, and Terraform's graph has no primitive for
-destroy-after-unrelated-update. It is the mirror image of the classic
-"create B before updating A" problem: that one is fixable with
-`depends_on`; this one is not, because destroyed resources carry no
-config to attach edges to.
-
-## When a second apply is required (and when it is not)
-
-| Operation | Applies needed | Why |
-|---|---|---|
-| Fresh environment (no state) | **1** | Nothing old exists; create order is flow → deploy → enable → policy. No old flow can be policy-referenced. |
-| Full destroy of an environment | **1** | The edge exists in reverse: policy is destroyed *before* the flows it references (reverse-dependency ordering), so the constraint can't trigger. |
-| **Upgrading an environment that holds v0.1 flows** | **2** | Policy update (repoint to the new flow) and old-flow destroy run in the same apply with no edge between them. First apply settles the policy; second completes the destroy. This is a **one-time migration per environment**, not a recurring cost. |
-
-After every environment has migrated to the new module version, all
-future applies — creation, feature work, promotion, teardown — are
-single-apply; the retry below becomes a silent no-op.
-
-## The mitigation
-
-Both the pipeline (`Deploy` job) and the local deploy script apply with a
-single retry, because the failure is deterministically self-healing: the
-first apply repoints the policy (removing the reference), so the second
-apply's destroy finds no constraint. This is not masking flakiness — it
-is completing a two-phase transition the graph model cannot express in
-one pass.
-
-```hcl
-# .github/workflows/push.yml (Deploy job) — same pattern in scripts/local_feature_deploy.sh
+```terraform
+# .github/workflows/push.yml (Deploy job)
 terraform -chdir="${_tfdir}" apply --auto-approve -input=false || {
   echo "First apply failed; retrying to settle flow-policy destroy ordering..."
   terraform -chdir="${_tfdir}" apply --auto-approve -input=false
 }
 ```
 
-## Alternatives considered
+Alternatively, phase the removal: merge the policy repoint first, then
+remove the superseded flow resources in a subsequent change. This is the
+right shape when a human reviews each step, at the cost of an extra
+promotion cycle.
 
-- **Deprecation release**: keep the superseded flows in the module for one
-  release, unreferenced, and drop them in the next. The destroy then
-  happens in an apply with no policy change. Rejected: it would bake the
-  dead HTML-template flow (~7.5k lines) into the module indefinitely.
-- **Phase the migration as two PRs**: "repoint policy" then "remove old
-  flows". Correct but turns every environment upgrade into a manual
-  two-step ceremony.
-- **Provider-side ordering**: a provider could model the policy's flow set
-  with internal create-before-destroy semantics and absorb the ordering.
-  The PingOne provider currently does not.
+Keeping the superseded flow in configuration for one release as an
+unreferenced resource is also workable, but it retains dead
+configuration in the module for its lifetime. Ping Identity recommends
+the retry approach for pipelines, and the phased removal where
+apply-time human review is part of the workflow.
 
-## General rule
+## When a second apply is required
 
-Whenever configuration **removes** resource A while **repointing** a
-third-party reference (policy, assignment, grant) away from A in the same
-apply, expect a possible `CONSTRAINT_VIOLATION` on A's destroy, and plan
-for one retry — or split the reference change and the removal across
-applies.
+| Operation | Applies | Why |
+|---|---|---|
+| Create an environment from no state | 1 | Nothing old exists. Terraform orders flow create → policy create, and no old flow can be policy-referenced. |
+| Destroy an environment | 1 | The edge exists in reverse: Terraform destroys the policy before the flows it references, so the constraint cannot trigger. |
+| Replace a distributed flow in an existing environment | 2 | The policy update and the old flow's destroy run in the same apply with no edge between them. The first apply settles the policy; the second completes the destroy. |
+
+The third row is a **one-time migration cost per environment**, not a
+recurring one: once every environment consumes the new module version,
+all future applies — creation, feature work, promotion, teardown — are
+single-apply, and the retry becomes a silent no-op.
+
+## Related considerations
+
+- The same pattern applies to any resource that is removed while a
+  third-party reference to it is repointed in the same apply: policy
+  distributions, application assignments, grants. Expect a possible
+  `CONSTRAINT_VIOLATION` on the removal and plan for one retry, or
+  split the reference change and the removal across applies.
+- DaVinci flows that remain deployed but are no longer distributed by
+  any policy are inert. Removing them promptly keeps environments clean
+  and avoids confusion in the admin console.
+- If the provider later models flow-policy membership with internal
+  replacement semantics, the retry may become unnecessary. Check the
+  provider changelog when upgrading.
