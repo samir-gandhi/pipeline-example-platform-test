@@ -5,5 +5,5 @@ resource "pingone_agreement" "consent" {
   environment_id        = pingone_environment.brand.id
   name                  = "Terms of Service"
   description           = "Consent to the terms of service and privacy policy."
-  reconsent_period_days = 0
+  reconsent_period_days = 30
 }
