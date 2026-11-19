@@ -61,7 +61,7 @@ resource "pingone_davinci_connector_instance" "pingone_master" {
     },
     "region" : {
       "type" : "string",
-      "value" : var.davinci_connection_PingOne_region
+      "value" : var.region_code
     }
   })
 }

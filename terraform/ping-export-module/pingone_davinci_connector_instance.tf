@@ -49,35 +49,6 @@ resource "pingone_davinci_connector_instance" "http" {
 }
 
 
-resource "pingone_davinci_connector_instance" "pingone" {
-  environment_id = pingone_environment.brand.id
-  name           = "PingOne"
-
-  connector = {
-    id = "pingOneSSOConnector"
-  }
-  properties = jsonencode({
-    "clientId" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_clientId
-    },
-    "clientSecret" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_clientSecret
-    },
-    "envId" : {
-      "type" : "string",
-      "value" : pingone_environment.brand.id
-    },
-    "envRegionInfo" : {
-      "value" : null
-    },
-    "region" : {
-      "type" : "string",
-      "value" : var.davinci_connection_PingOne_region
-    }
-  })
-}
 
 
 resource "pingone_davinci_connector_instance" "pingone_authentication" {

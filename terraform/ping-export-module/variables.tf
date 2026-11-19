@@ -32,22 +32,14 @@ variable "branding" {
   })
 }
 
-variable "davinci_connection_PingOne_clientId" {
-  description = "Worker application client ID the DaVinci PingOne connector uses to call the brand environment's API."
+
+
+
+
+variable "region_code" {
+  description = "PingOne region code the DaVinci PingOne connector calls (matches the environment's provider region)."
   type        = string
 }
-
-variable "davinci_connection_PingOne_clientSecret" {
-  description = "Worker application client secret for the DaVinci PingOne connector."
-  type        = string
-  sensitive   = true
-}
-
-variable "davinci_connection_PingOne_region" {
-  description = "Region code for the DaVinci PingOne connector (e.g. NA)."
-  type        = string
-}
-
 
 variable "oidc_redirect_uris" {
   description = "Redirect URIs for the brand's OIDC application."
