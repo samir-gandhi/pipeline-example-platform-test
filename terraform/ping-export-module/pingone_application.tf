@@ -1,5 +1,12 @@
 
 
+# Browser-callable origins (scheme + host) of the app's redirect URIs.
+locals {
+  app_origins = [for uri in var.oidc_redirect_uris :
+    regex("^(https?://[^/]+)", uri)[0]
+  ]
+}
+
 resource "pingone_application" "baseline_reference_customer_portal" {
   environment_id         = pingone_environment.brand.id
   name                   = "baseline-reference Customer Portal"
@@ -32,6 +39,12 @@ resource "pingone_application" "baseline_reference_customer_portal" {
       key_rotation_policy_id = pingone_key_rotation_policy.brand.id
     }
     support_unsigned_request_object = false
+    # The authorize redirect and dashboard token exchange are browser calls
+    # from the app's origin; allow them explicitly.
+    cors_settings = {
+      behavior = "ALLOW_SPECIFIC_ORIGINS"
+      origins  = local.app_origins
+    }
   }
 }
 

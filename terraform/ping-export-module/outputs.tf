@@ -33,3 +33,8 @@ output "portal_client_secret" {
   value       = pingone_application_secret.portal_secret.secret
   sensitive   = true
 }
+
+output "flow_policy_id" {
+  description = "DaVinci flow policy distributing the sign-on flow (authorize acr_values)."
+  value       = pingone_davinci_application_flow_policy.pingone___sign_on_and_registration.id
+}

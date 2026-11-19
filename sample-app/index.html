@@ -47,7 +47,8 @@
           + '?response_type=code'
           + '&client_id=' + encodeURIComponent(clientId)
           + '&redirect_uri=' + encodeURIComponent(redirectUri)
-          + '&scope=openid profile email';
+          + '&scope=openid profile email'
+          + '&acr_values=' + encodeURIComponent(window._env_.flowPolicyId);
         window.location.assign(authorizeUrl);
       });
 
