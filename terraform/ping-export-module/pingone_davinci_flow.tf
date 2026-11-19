@@ -5034,7 +5034,7 @@ resource "pingone_davinci_flow" "irco_starter_kit" {
           data = {
             id              = "t6uwbxhn3l"
             node_type       = "CONNECTION"
-            connection_id   = pingone_davinci_connector_instance.pingone.id
+            connection_id   = pingone_davinci_connector_instance.pingone_master.id
             connector_id    = "pingOneSSOConnector"
             name            = "PingOne"
             label           = "PingOne"
