@@ -157,13 +157,27 @@ jobs:
           -backend-config="region=${TF_VAR_tf_state_region}" \
           -backend-config="key=${_stateKey}"
         echo "***Running terraform apply***"
-        # A removed flow can still be referenced by an application flow policy
-        # when its destroy runs in the same apply as the policy update (no
-        # config edge between them). Retry once to settle the ordering.
-        terraform -chdir="${_tfdir}" apply --auto-approve -input=false || {
-          echo "First apply failed; retrying to settle flow-policy destroy ordering..."
-          terraform -chdir="${_tfdir}" apply --auto-approve -input=false
-        }
+        # Destroy-ordering pitfall: when an apply both repoints an application
+        # flow policy to a new flow AND destroys the old flow, Terraform has
+        # no edge between the two (the removed flow contributes no config), so
+        # the destroy can reach the API while the policy still references it
+        # -> CONSTRAINT_VIOLATION. Pre-apply the policy chain with -target
+        # first: the new flow is created and the policy repointed while the
+        # old flow stays deployed; the full apply then destroys it cleanly.
+        _planfile=$(mktemp)
+        terraform -chdir="${_tfdir}" plan -input=false -no-color -out=/dev/null > "${_planfile}" || true
+        if grep -q "pingone_davinci_application_flow_policy" "${_planfile}" \
+           && grep -qE "pingone_davinci_flow[^ ]* will be destroyed" "${_planfile}"; then
+          echo "***Flow-policy repoint + flow destroy detected; applying policy chain first***"
+          terraform -chdir="${_tfdir}" apply -auto-approve -input=false \
+            -target=module.baseline.pingone_davinci_flow.irco_starter_kit \
+            -target=module.baseline.pingone_davinci_flow_deploy.irco_starter_kit \
+            -target=module.baseline.pingone_davinci_flow_enable.irco_starter_kit \
+            -target=module.baseline.pingone_davinci_application_flow_policy.pingone___sign_on_and_registration \
+            || true
+        fi
+        rm -f "${_planfile}"
+        terraform -chdir="${_tfdir}" apply --auto-approve -input=false
         # Publish the sample app for prod; other environments run it locally.
         case ${_branch} in
           prod)

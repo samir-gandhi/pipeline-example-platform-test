@@ -110,15 +110,30 @@ if [ "${_generate}" = true ]; then
   TF_VAR_pingone_environment_id="${_branch_environment_id}" \
     terraform -chdir="${TFDIR}" plan -generate-config-out=generated-platform.tf
 else
-  # A removed flow can still be referenced by an application flow policy when
-  # its destroy runs in the same apply as the policy update (no config edge
-  # exists between them). A second apply finishes the destroy once the policy
-  # no longer references the flow. Tolerate one retry for that case.
+  # Destroy-ordering pitfall: when an apply both repoints an application flow
+  # policy to a new flow AND destroys the old flow, Terraform has no edge
+  # between the two (the removed flow contributes no config), so the destroy
+  # can reach the API while the policy still references it ->
+  # CONSTRAINT_VIOLATION. Terraform cannot express "destroy after that
+  # update", so pre-apply the policy chain with -target first: the new flow
+  # is created and the policy repointed while the old flow stays deployed.
+  # The full apply afterwards destroys the old flow with no reference left.
+  _planfile="${TMPDIR:-/tmp}/plan-${_branch}.$$.txt"
   TF_VAR_pingone_environment_id="${_branch_environment_id}" \
-    terraform -chdir="${TFDIR}" "${_command}" || {
-      echo "First apply failed; retrying to settle flow-policy destroy ordering..."
-      TF_VAR_pingone_environment_id="${_branch_environment_id}" \
-        terraform -chdir="${TFDIR}" "${_command}"
-    }
+    terraform -chdir="${TFDIR}" plan -input=false -no-color -out=/dev/null > "${_planfile}" || true
+  if grep -q "pingone_davinci_application_flow_policy" "${_planfile}" \
+     && grep -qE "pingone_davinci_flow[^ ]* will be destroyed" "${_planfile}"; then
+    echo "***Flow-policy repoint + flow destroy detected; applying policy chain first***"
+    TF_VAR_pingone_environment_id="${_branch_environment_id}" \
+      terraform -chdir="${TFDIR}" apply -auto-approve -input=false \
+        -target=module.baseline.pingone_davinci_flow.irco_starter_kit \
+        -target=module.baseline.pingone_davinci_flow_deploy.irco_starter_kit \
+        -target=module.baseline.pingone_davinci_flow_enable.irco_starter_kit \
+        -target=module.baseline.pingone_davinci_application_flow_policy.pingone___sign_on_and_registration \
+      || true
+  fi
+  rm -f "${_planfile}"
+  TF_VAR_pingone_environment_id="${_branch_environment_id}" \
+    terraform -chdir="${TFDIR}" "${_command}"
 fi
 
