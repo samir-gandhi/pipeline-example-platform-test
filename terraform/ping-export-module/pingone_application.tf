@@ -48,3 +48,37 @@ resource "pingone_application" "baseline_reference_customer_portal" {
   }
 }
 
+
+# Predefined OpenID Connect resource + the standard scopes the portal app
+# requests during authorize. Scopes are per-environment resources, so they
+# are looked up, not created.
+data "pingone_resource_scope" "openid" {
+  environment_id = pingone_environment.brand.id
+  resource_type  = "OPENID_CONNECT"
+  name           = "openid"
+}
+
+data "pingone_resource_scope" "profile" {
+  environment_id = pingone_environment.brand.id
+  resource_type  = "OPENID_CONNECT"
+  name           = "profile"
+}
+
+data "pingone_resource_scope" "email" {
+  environment_id = pingone_environment.brand.id
+  resource_type  = "OPENID_CONNECT"
+  name           = "email"
+}
+
+# The invoking application must be granted the scopes it sends in the
+# authorize request.
+resource "pingone_application_resource_grant" "portal_oidc" {
+  environment_id = pingone_environment.brand.id
+  application_id = pingone_application.baseline_reference_customer_portal.id
+  resource_type  = "OPENID_CONNECT"
+  scopes = [
+    data.pingone_resource_scope.openid.id,
+    data.pingone_resource_scope.profile.id,
+    data.pingone_resource_scope.email.id,
+  ]
+}
