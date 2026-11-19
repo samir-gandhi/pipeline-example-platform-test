@@ -109,32 +109,61 @@ Relying on apply ordering that Terraform does not guarantee:
 # the API may reject the destroy mid-apply.
 ```
 
+Simply retrying the failed apply is also not sufficient — see
+"Why a plain retry does not work" below.
+
+## Why a plain retry does not work
+
+An obvious mitigation — rerun the apply after it fails — does **not**
+work, and it is worth understanding why. The policy update is gated
+behind the new flow's create (the one edge the graph does have), and a
+flow create is slow. The old flow's destroy is fast-failing and runs in
+parallel. Every attempt follows the same trajectory: the destroy
+reaches the API first, is refused, the apply aborts, and the policy
+update never lands. Repeating the same plan repeats the same race.
+
 ## Best practice
 
-Ping Identity recommends structuring the promotion so the apply tolerates
-the two-phase transition, or phasing the removal across applies.
+Ping Identity recommends settling the policy before the destroys run:
+detect the pattern in the plan (an application flow policy change plus
+a flow destroy), and apply the policy chain first with `-target`. The
+new flow is created and the policy repointed while the old flow stays
+deployed; the full apply afterwards destroys the old flow with no
+reference left behind.
 
-Retry the apply once in the pipeline. The failure is deterministically
-self-healing: the first apply updates the policy and removes the
-reference, so the second apply's destroy finds no constraint.
+```sh
+# 1. Targeted pre-apply: create the new flow, repoint the policy.
+terraform apply -auto-approve \
+  -target=pingone_davinci_flow.sign_on_flow_v2 \
+  -target=pingone_davinci_application_flow_policy.sign_on_policy
 
-```terraform
-# .github/workflows/push.yml (Deploy job)
-terraform -chdir="${_tfdir}" apply --auto-approve -input=false || {
-  echo "First apply failed; retrying to settle flow-policy destroy ordering..."
-  terraform -chdir="${_tfdir}" apply --auto-approve -input=false
-}
+# 2. Full apply: the old flow is now unreferenced; destroy succeeds.
+terraform apply -auto-approve
 ```
 
-Alternatively, phase the removal: merge the policy repoint first, then
-remove the superseded flow resources in a subsequent change. This is the
-right shape when a human reviews each step, at the cost of an extra
-promotion cycle.
+In a pipeline, gate the pre-apply on the plan content so it only runs
+during the one-time migration:
+
+```sh
+terraform plan -no-color -out=/dev/null > plan.txt
+if grep -q "pingone_davinci_application_flow_policy" plan.txt \
+   && grep -qE "pingone_davinci_flow[^ ]* will be destroyed" plan.txt; then
+  terraform apply -auto-approve \
+    -target=pingone_davinci_flow.sign_on_flow_v2 \
+    -target=pingone_davinci_application_flow_policy.sign_on_policy
+fi
+terraform apply -auto-approve
+```
+
+Alternatively, phase the removal manually: merge the policy repoint
+first, then remove the superseded flow resources in a subsequent
+change. This is the right shape when a human reviews each step, at the
+cost of an extra promotion cycle.
 
 Keeping the superseded flow in configuration for one release as an
 unreferenced resource is also workable, but it retains dead
 configuration in the module for its lifetime. Ping Identity recommends
-the retry approach for pipelines, and the phased removal where
+the targeted pre-apply for pipelines, and the phased removal where
 apply-time human review is part of the workflow.
 
 ## When a second apply is required
@@ -143,20 +172,20 @@ apply-time human review is part of the workflow.
 |---|---|---|
 | Create an environment from no state | 1 | Nothing old exists. Terraform orders flow create → policy create, and no old flow can be policy-referenced. |
 | Destroy an environment | 1 | The edge exists in reverse: Terraform destroys the policy before the flows it references, so the constraint cannot trigger. |
-| Replace a distributed flow in an existing environment | 2 | The policy update and the old flow's destroy run in the same apply with no edge between them. The first apply settles the policy; the second completes the destroy. |
+| Replace a distributed flow in an existing environment | 2 (targeted pre-apply + full apply) | The policy update and the old flow's destroy run in the same apply with no edge between them. The targeted pre-apply settles the policy; the full apply completes the destroy. |
 
 The third row is a **one-time migration cost per environment**, not a
 recurring one: once every environment consumes the new module version,
 all future applies — creation, feature work, promotion, teardown — are
-single-apply, and the retry becomes a silent no-op.
+single-apply.
 
 ## Related considerations
 
 - The same pattern applies to any resource that is removed while a
   third-party reference to it is repointed in the same apply: policy
   distributions, application assignments, grants. Expect a possible
-  `CONSTRAINT_VIOLATION` on the removal and plan for one retry, or
-  split the reference change and the removal across applies.
+  `CONSTRAINT_VIOLATION` on the removal and plan for a targeted
+  pre-apply of the reference, or split the change across applies.
 - DaVinci flows that remain deployed but are no longer distributed by
   any policy are inert. Removing them promptly keeps environments clean
   and avoids confusion in the admin console.
