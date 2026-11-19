@@ -1,6 +1,6 @@
 # Child repo: consume the parent's baseline module remotely, pinned to a tag.
 module "baseline" {
-  source = "git::https://github.com/samir-gandhi/pipeline-example-platform-test//terraform/ping-export-module?ref=baseline-v0.1.0"
+  source = "git::https://github.com/samir-gandhi/pipeline-example-platform-test//terraform/ping-export-module?ref=baseline-v0.2.0"
 
   environment_name = var.pingone_environment_name
   license_id       = var.pingone_license_id
