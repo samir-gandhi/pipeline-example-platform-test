@@ -110,7 +110,15 @@ if [ "${_generate}" = true ]; then
   TF_VAR_pingone_environment_id="${_branch_environment_id}" \
     terraform -chdir="${TFDIR}" plan -generate-config-out=generated-platform.tf
 else
+  # A removed flow can still be referenced by an application flow policy when
+  # its destroy runs in the same apply as the policy update (no config edge
+  # exists between them). A second apply finishes the destroy once the policy
+  # no longer references the flow. Tolerate one retry for that case.
   TF_VAR_pingone_environment_id="${_branch_environment_id}" \
-    terraform -chdir="${TFDIR}" "${_command}"
+    terraform -chdir="${TFDIR}" "${_command}" || {
+      echo "First apply failed; retrying to settle flow-policy destroy ordering..."
+      TF_VAR_pingone_environment_id="${_branch_environment_id}" \
+        terraform -chdir="${TFDIR}" "${_command}"
+    }
 fi
 
