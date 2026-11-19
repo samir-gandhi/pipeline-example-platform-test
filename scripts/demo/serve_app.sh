@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 # Serve the sample app over HTTPS for the demo. Requires terraform apply to
 # have generated sample-app/global.js first.
-# Usage: scripts/demo/serve_app.sh [--port 8443]
+# Usage: scripts/demo/serve_app.sh [--port 8080]
 
 set -eu
 
-_port="8443"
+_port="8080"
 [ "${1:-}" = "--port" ] && { _port="$2"; }
 
 _repo_root=$(git rev-parse --show-toplevel)

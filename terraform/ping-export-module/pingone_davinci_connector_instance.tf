@@ -108,3 +108,20 @@ resource "pingone_davinci_connector_instance" "variables" {
     id = "variablesConnector"
   }
 }
+resource "pingone_davinci_connector_instance" "form" {
+  environment_id = pingone_environment.brand.id
+  name           = "Form"
+
+  connector = {
+    id = "pingOneFormsConnector"
+  }
+}
+
+resource "pingone_davinci_connector_instance" "authentication" {
+  environment_id = pingone_environment.brand.id
+  name           = "Authentication"
+
+  connector = {
+    id = "authenticationUseCaseConnector"
+  }
+}

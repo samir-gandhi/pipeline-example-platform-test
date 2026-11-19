@@ -1,8 +1,7 @@
-
 resource "pingone_form" "irco_starter_kit__e28094__agreement" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Agreement"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to read and consent to an agreement, such as a Terms of Service."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to read and consent to an agreement, such as a Terms of Service."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -13,6 +12,22 @@ resource "pingone_form" "irco_starter_kit__e28094__agreement" {
   components = {
     fields = [
       {
+        agreement = {
+          id                    = pingone_agreement.consent.id
+          use_dynamic_agreement = false
+        },
+        inputType = "READ_ONLY_TEXT",
+        key       = "agreement",
+        position = {
+          col = 0,
+          row = 0
+        },
+        titleEnabled  = true,
+        input_type    = "READ_ONLY_TEXT",
+        title_enabled = true,
+        type          = "AGREEMENT"
+      },
+      {
         position = {
           col = 0,
           row = 1
@@ -20,7 +35,7 @@ resource "pingone_form" "irco_starter_kit__e28094__agreement" {
         type = "ERROR_DISPLAY"
       },
       {
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.Accept\\\",\\\"defaultTranslation\\\":\\\"Accept\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Accept", "inline" : true, "key" : "auth-policy.create-account.Accept", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 2
@@ -36,7 +51,7 @@ resource "pingone_form" "irco_starter_kit__e28094__agreement" {
       },
       {
         key   = "decline-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.Decline\\\",\\\"defaultTranslation\\\":\\\"Decline\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Decline", "inline" : true, "key" : "auth-policy.create-account.Decline", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 3
@@ -48,10 +63,11 @@ resource "pingone_form" "irco_starter_kit__e28094__agreement" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Change Your Password"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to enter their current password and set a new password."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to enter their current password and set a new password."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -62,7 +78,7 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
   components = {
     fields = [
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.ChangePassword\\\",\\\"defaultTranslation\\\":\\\"Change Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Change Password", "inline" : true, "key" : "auth-policy.recover-account.ChangePassword", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         key     = "title-text",
         position = {
           col = 0,
@@ -71,7 +87,7 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
         type = "SLATE_TEXTBLOB"
       },
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.YouMustChangeYourPassword\\\",\\\"defaultTranslation\\\":\\\"You must change your password before signing on.\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }] }, { "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "You must change your password before signing on.", "inline" : true, "key" : "auth-policy.recover-account.YouMustChangeYourPassword", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "text" : "" }] }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -93,7 +109,7 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
       {
         attributeDisabled            = false,
         key                          = "user.currentPassword",
-        label                        = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.CurrentPassword\\\",\\\"defaultTranslation\\\":\\\"Current Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Current Password", "inline" : true, "key" : "auth-policy.recover-account.CurrentPassword", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -104,14 +120,16 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
         showPasswordRequirements = false,
         type                     = "PASSWORD",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
         attributeDisabled            = false,
         key                          = "user.newPassword",
-        label                        = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.NewPassword\\\",\\\"defaultTranslation\\\":\\\"New Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "New Password", "inline" : true, "key" : "auth-policy.recover-account.NewPassword", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
+        labelPasswordVerify          = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Verify Password", "inline" : true, "key" : "auth-policy.recover-account.VerifyPassword", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -119,15 +137,16 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
           row = 4
         },
         required                 = true,
-        showPasswordRequirements = false,
+        showPasswordRequirements = true,
         type                     = "PASSWORD_VERIFY",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Continue\\\",\\\"defaultTranslation\\\":\\\"Continue\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Continue", "inline" : true, "key" : "auth-policy.recover-account.Continue", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 5
@@ -143,7 +162,7 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
       },
       {
         key   = "cancel-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Cancel\\\",\\\"defaultTranslation\\\":\\\"Cancel\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Cancel", "inline" : true, "key" : "auth-policy.recover-account.Cancel", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 6
@@ -155,10 +174,11 @@ resource "pingone_form" "irco_starter_kit__e28094__change_your_password" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Enter New Password"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to enter a verification code and set a new password."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to enter a verification code and set a new password."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -169,7 +189,7 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
   components = {
     fields = [
       {
-        content = "\"[{\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.EnterNewPassword\\\",\\\"defaultTranslation\\\":\\\"Enter New Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}],\\\"type\\\":\\\"align-center\\\"}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Enter New Password", "inline" : true, "key" : "auth-policy.recover-account.EnterNewPassword", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         key     = "title-text",
         position = {
           col = 0,
@@ -178,7 +198,7 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
         type = "SLATE_TEXTBLOB"
       },
       {
-        content = "\"[{\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.CreateAndVerifyNewPassword\\\",\\\"defaultTranslation\\\":\\\"Create and verify a new password.\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]}],\\\"type\\\":\\\"align-center\\\"}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }] }, { "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Create and verify a new password.", "inline" : true, "key" : "auth-policy.recover-account.CreateAndVerifyNewPassword", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "text" : "" }] }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -200,7 +220,7 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
       {
         attributeDisabled            = false,
         key                          = "user.recoveryCode",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.RecoveryCode\\\",\\\"defaultTranslation\\\":\\\"Recovery Code\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Recovery Code", "inline" : true, "key" : "auth-policy.recover-account.RecoveryCode", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -211,14 +231,16 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
         showPasswordRequirements = false,
         type                     = "PASSWORD",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
         attributeDisabled            = false,
         key                          = "user.newPassword",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.NewPassword\\\",\\\"defaultTranslation\\\":\\\"New Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "New Password", "inline" : true, "key" : "auth-policy.recover-account.NewPassword", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
+        labelPasswordVerify          = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Verify Password", "inline" : true, "key" : "auth-policy.recover-account.VerifyPassword", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -226,15 +248,16 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
           row = 4
         },
         required                 = true,
-        showPasswordRequirements = false,
+        showPasswordRequirements = true,
         type                     = "PASSWORD_VERIFY",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\",\\\"color\\\":\\\"#018511\\\"}]},{\\\"children\\\":[{\\\"color\\\":\\\"#018511\\\",\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.CodeResent\\\",\\\"defaultTranslation\\\":\\\"Code resent\\\",\\\"color\\\":\\\"#018511\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"color\\\":\\\"#018511\\\",\\\"text\\\":\\\"\\\"}]}]}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "children" : [{ "color" : "#018511", "text" : "" }] }, { "children" : [{ "color" : "#018511", "text" : "" }, { "children" : [{ "text" : "" }], "color" : "#018511", "defaultTranslation" : "Code resent", "inline" : true, "key" : "auth-policy.recover-account.CodeResent", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "color" : "#018511", "text" : "" }] }], "type" : "align-center" }], "type" : "align-center" }]),
         icon = {
           size = "SMALL",
           type = "SUCCESS"
@@ -252,7 +275,7 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
       },
       {
         key   = "resend-code-link",
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.ResendCode\\\",\\\"defaultTranslation\\\":\\\"Resend Code\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Resend Code", "inline" : true, "key" : "auth-policy.recover-account.ResendCode", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 6
@@ -264,7 +287,7 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
         }
       },
       {
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Continue\\\",\\\"defaultTranslation\\\":\\\"Continue\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Continue", "inline" : true, "key" : "auth-policy.recover-account.Continue", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 7
@@ -280,7 +303,7 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
       },
       {
         key   = "cancel-link",
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Cancel\\\",\\\"defaultTranslation\\\":\\\"Cancel\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Cancel", "inline" : true, "key" : "auth-policy.recover-account.Cancel", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 8
@@ -292,10 +315,11 @@ resource "pingone_form" "irco_starter_kit__e28094__enter_new_password" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__profiling_your_device" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Profiling Your Device"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Profile the user's device to enable risk evaluation."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Profile the user's device to enable risk evaluation."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -324,7 +348,7 @@ resource "pingone_form" "irco_starter_kit__e28094__profiling_your_device" {
         type               = "POLLING"
       },
       {
-        content = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]}]\"",
+        content = jsonencode([{ "children" : [{ "text" : "" }] }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -341,10 +365,11 @@ resource "pingone_form" "irco_starter_kit__e28094__profiling_your_device" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Recover Your Account"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to enter their email address to receive a verification code."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to enter their email address to receive a verification code."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -355,7 +380,7 @@ resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
   components = {
     fields = [
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.RecoverYourAccount\\\",\\\"defaultTranslation\\\":\\\"Recover Your Account\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Recover Your Account", "inline" : true, "key" : "auth-policy.recover-account.RecoverYourAccount", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -368,7 +393,7 @@ resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
         type = "SLATE_TEXTBLOB"
       },
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.EnterYourEmailAddress\\\",\\\"defaultTranslation\\\":\\\"Enter your email address to receive a recovery code that will let you change your password.\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }] }, { "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Enter your email address to receive a recovery code that will let you change your password.", "inline" : true, "key" : "auth-policy.recover-account.EnterYourEmailAddress", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "text" : "" }] }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -390,7 +415,7 @@ resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
       {
         attributeDisabled            = false,
         key                          = "user.email",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Email\\\",\\\"defaultTranslation\\\":\\\"Email\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Email", "inline" : true, "key" : "auth-policy.recover-account.Email", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -400,12 +425,13 @@ resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
         required = true,
         type     = "TEXT",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Continue\\\",\\\"defaultTranslation\\\":\\\"Continue\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Continue", "inline" : true, "key" : "auth-policy.recover-account.Continue", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 4
@@ -421,7 +447,7 @@ resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
       },
       {
         key   = "cancel-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Cancel\\\",\\\"defaultTranslation\\\":\\\"Cancel\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Cancel", "inline" : true, "key" : "auth-policy.recover-account.Cancel", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 5
@@ -433,10 +459,11 @@ resource "pingone_form" "irco_starter_kit__e28094__recover_your_account" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__registration" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Registration"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to enter their information to create an account."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to enter their information to create an account."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -447,7 +474,7 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
   components = {
     fields = [
       {
-        content = "\"[{\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.CreateYourAccount\\\",\\\"defaultTranslation\\\":\\\"Create Your Account\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}],\\\"type\\\":\\\"align-center\\\"}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Create Your Account", "inline" : true, "key" : "auth-policy.create-account.CreateYourAccount", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -469,7 +496,7 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
       {
         attributeDisabled            = false,
         key                          = "user.email",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.Email\\\",\\\"defaultTranslation\\\":\\\"Email\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Email", "inline" : true, "key" : "auth-policy.create-account.Email", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -479,14 +506,16 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
         required = true,
         type     = "TEXT",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
         attributeDisabled            = false,
         key                          = "user.password",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.Password\\\",\\\"defaultTranslation\\\":\\\"Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Password", "inline" : true, "key" : "auth-policy.create-account.Password", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
+        labelPasswordVerify          = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Verify Password", "inline" : true, "key" : "auth-policy.create-account.VerifyPassword", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -494,17 +523,18 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
           row = 3
         },
         required                 = true,
-        showPasswordRequirements = false,
+        showPasswordRequirements = true,
         type                     = "PASSWORD_VERIFY",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
         attributeDisabled            = false,
         key                          = "user.name.given",
-        label                        = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"fields.user.name.given.label\\\",\\\"defaultTranslation\\\":\\\"Given Name\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Given Name", "inline" : true, "key" : "fields.user.name.given.label", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -514,14 +544,15 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
         required = true,
         type     = "TEXT",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
         attributeDisabled            = false,
         key                          = "user.name.family",
-        label                        = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"fields.user.name.family.label\\\",\\\"defaultTranslation\\\":\\\"Family Name\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Family Name", "inline" : true, "key" : "fields.user.name.family.label", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -531,12 +562,13 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
         required = true,
         type     = "TEXT",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.Continue\\\",\\\"defaultTranslation\\\":\\\"Continue\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Continue", "inline" : true, "key" : "auth-policy.create-account.Continue", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 6
@@ -563,7 +595,7 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
       },
       {
         key   = "back-link",
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.AlreadyHaveAccount\\\",\\\"defaultTranslation\\\":\\\"Already have an account? Sign on\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Already have an account? Sign on", "inline" : true, "key" : "auth-policy.create-account.AlreadyHaveAccount", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 9
@@ -575,10 +607,11 @@ resource "pingone_form" "irco_starter_kit__e28094__registration" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Sign in or LinkedIn"
-  description                    = "Prompt the user to sign on."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to sign on."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -589,7 +622,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
   components = {
     fields = [
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOn\\\",\\\"defaultTranslation\\\":\\\"Sign On\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Sign On", "inline" : true, "key" : "auth-policy.sign-on.SignOn", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         key     = "title-text",
         position = {
           col = 0,
@@ -607,7 +640,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
       {
         attributeDisabled            = false,
         key                          = "user.email",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.create-account.Email\\\",\\\"defaultTranslation\\\":\\\"Email\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Email", "inline" : true, "key" : "auth-policy.create-account.Email", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -617,12 +650,13 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
         required = true,
         type     = "TEXT",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOn\\\",\\\"defaultTranslation\\\":\\\"Sign On\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Sign On", "inline" : true, "key" : "auth-policy.sign-on.SignOn", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 3
@@ -649,16 +683,18 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
       },
       {
         key   = "passkey-button",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOnWithPasskey\\\",\\\"defaultTranslation\\\":\\\"Sign On with Passkey\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Sign On with Passkey", "inline" : true, "key" : "auth-policy.sign-on.SignOnWithPasskey", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 5
         },
         styles = {
           alignment                                = "CENTER",
+          backgroundColor                          = "#69788b",
+          borderColor                              = "#69788b",
           displayDefaultThemeButtonBackgroundColor = false,
           displayDefaultThemeButtonBorderColor     = false,
-          displayDefaultThemeButtonTextColor       = false,
+          displayDefaultThemeButtonTextColor       = true,
           enabled                                  = true,
           height                                   = 36,
           padding = {
@@ -666,7 +702,9 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
             left   = 0,
             right  = 0,
             top    = 5
-          }
+          },
+          textColor = "#FFF",
+          widthUnit = "PERCENT"
         },
         type = "FLOW_BUTTON",
         visibility = {
@@ -676,16 +714,18 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
       },
       {
         key   = "passwordless-button",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"Passwordless SignOn\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "Passwordless SignOn" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 6
         },
         styles = {
           alignment                                = "CENTER",
+          backgroundColor                          = "#69788b",
+          borderColor                              = "#69788b",
           displayDefaultThemeButtonBackgroundColor = false,
           displayDefaultThemeButtonBorderColor     = false,
-          displayDefaultThemeButtonTextColor       = false,
+          displayDefaultThemeButtonTextColor       = true,
           enabled                                  = true,
           height                                   = 36,
           padding = {
@@ -693,7 +733,9 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
             left   = 0,
             right  = 0,
             top    = 5
-          }
+          },
+          textColor = "#FFF",
+          widthUnit = "PERCENT"
         },
         type = "FLOW_BUTTON",
         visibility = {
@@ -714,7 +756,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
       },
       {
         key   = "register-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.RegisterNow\\\",\\\"defaultTranslation\\\":\\\"No account? Register now!\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "No account? Register now!", "inline" : true, "key" : "auth-policy.sign-on.RegisterNow", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 9
@@ -727,7 +769,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
       },
       {
         key   = "account-recovery-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOnHelp\\\",\\\"defaultTranslation\\\":\\\"Having trouble signing on?\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Having trouble signing on?", "inline" : true, "key" : "auth-policy.sign-on.SignOnHelp", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 10
@@ -743,10 +785,11 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_in_or_linkedin" {
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Sign On (Password)"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to sign on."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to sign on."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -757,7 +800,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
   components = {
     fields = [
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOn\\\",\\\"defaultTranslation\\\":\\\"Sign On\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Sign On", "inline" : true, "key" : "auth-policy.sign-on.SignOn", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         key     = "title-text",
         position = {
           col = 0,
@@ -775,7 +818,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
       {
         attributeDisabled            = false,
         key                          = "user.password",
-        label                        = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.Password\\\",\\\"defaultTranslation\\\":\\\"Password\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Password", "inline" : true, "key" : "auth-policy.sign-on.Password", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -786,8 +829,9 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
         showPasswordRequirements = false,
         type                     = "PASSWORD",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         },
         visibility = {
           key  = "passwordAuth",
@@ -797,17 +841,18 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
       {
         appearance                   = "CHECKBOX",
         attributeDisabled            = false,
+        errorMessage                 = jsonencode([{ "children" : [{ "text" : "Select the checkbox to continue." }], "type" : "paragraph" }]),
         inputType                    = "BOOLEAN",
         key                          = "remember-me-checkbox",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.RememberMe\\\",\\\"defaultTranslation\\\":\\\"Remember me\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Remember me", "inline" : true, "key" : "auth-policy.sign-on.RememberMe", "type" : "i18n" }, { "text" : "" }] }]),
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
           col = 0,
           row = 3
         },
-        input_type = "BOOLEAN",
         required   = false,
+        input_type = "BOOLEAN",
         type       = "SINGLE_CHECKBOX",
         visibility = {
           key  = "rememberMe",
@@ -815,7 +860,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
         }
       },
       {
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOn\\\",\\\"defaultTranslation\\\":\\\"Sign On\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Sign On", "inline" : true, "key" : "auth-policy.sign-on.SignOn", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 4
@@ -831,7 +876,7 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
       },
       {
         key   = "account-recovery-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.sign-on.SignOnHelp\\\",\\\"defaultTranslation\\\":\\\"Having trouble signing on?\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Having trouble signing on?", "inline" : true, "key" : "auth-policy.sign-on.SignOnHelp", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 5
@@ -847,10 +892,11 @@ resource "pingone_form" "irco_starter_kit__e28094__sign_on__0028_password_0029" 
 }
 
 
+
 resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
   environment_id                 = pingone_environment.brand.id
   name                           = "IRCO Starter Kit — Verification Code"
-  description                    = "Imported 2026-10-07T06:02:43.215Z with flow: \"IRCO Starter Kit\". Prompt the user to verify their email address by entering a verification code."
+  description                    = "Imported 2026-10-17T04:07:22.139Z with flow: \"IRCO Starter Kit\". Prompt the user to verify their email address by entering a verification code."
   category                       = "CUSTOM"
   cols                           = 4
   mark_optional                  = true
@@ -861,7 +907,7 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
   components = {
     fields = [
       {
-        content = "\"[{\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.VerificationCode\\\",\\\"defaultTranslation\\\":\\\"Verification Code\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"heading-1\\\"}],\\\"type\\\":\\\"align-center\\\"}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Verification Code", "inline" : true, "key" : "auth-policy.recover-account.VerificationCode", "type" : "i18n" }, { "text" : "" }], "type" : "heading-1" }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -874,7 +920,7 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
         type = "SLATE_TEXTBLOB"
       },
       {
-        content = "\"[{\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.EnterTheCodeThatWasEmailed\\\",\\\"defaultTranslation\\\":\\\"Enter the code that was emailed to you to verify your email address.\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]}],\\\"type\\\":\\\"align-center\\\"}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "text" : "" }] }, { "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Enter the code that was emailed to you to verify your email address.", "inline" : true, "key" : "auth-policy.recover-account.EnterTheCodeThatWasEmailed", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "text" : "" }] }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -896,7 +942,8 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
       {
         attributeDisabled            = false,
         key                          = "verification-code-field",
-        label                        = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.VerificationCode\\\",\\\"defaultTranslation\\\":\\\"Verification Code\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label                        = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Verification Code", "inline" : true, "key" : "auth-policy.recover-account.VerificationCode", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
+        labelMode                    = "FLOAT",
         otherOptionAttributeDisabled = false,
         otherOptionEnabled           = false,
         position = {
@@ -906,12 +953,13 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
         required = true,
         type     = "TEXT",
         validation = {
-          regex = "",
-          type  = "NONE"
+          errorMessage = "",
+          regex        = "",
+          type         = "NONE"
         }
       },
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\",\\\"color\\\":\\\"#018511\\\"}]},{\\\"children\\\":[{\\\"color\\\":\\\"#018511\\\",\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.CodeResent\\\",\\\"defaultTranslation\\\":\\\"Code resent\\\",\\\"color\\\":\\\"#018511\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"color\\\":\\\"#018511\\\",\\\"text\\\":\\\"\\\"}]}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "color" : "#018511", "text" : "" }] }, { "children" : [{ "color" : "#018511", "text" : "" }, { "children" : [{ "text" : "" }], "color" : "#018511", "defaultTranslation" : "Code resent", "inline" : true, "key" : "auth-policy.recover-account.CodeResent", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "color" : "#018511", "text" : "" }] }], "type" : "align-center" }]),
         icon = {
           size = "SMALL",
           type = "SUCCESS"
@@ -928,7 +976,7 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
         }
       },
       {
-        content = "\"[{\\\"type\\\":\\\"align-center\\\",\\\"children\\\":[{\\\"children\\\":[{\\\"text\\\":\\\"\\\",\\\"color\\\":\\\"#018511\\\"}]},{\\\"children\\\":[{\\\"color\\\":\\\"#a31300\\\",\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.ReachedResendLimit\\\",\\\"defaultTranslation\\\":\\\"You have reached your resend limit. Try again later.\\\",\\\"color\\\":\\\"#a31300\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]},{\\\"children\\\":[{\\\"color\\\":\\\"#018511\\\",\\\"text\\\":\\\"\\\"}]}]}]\"",
+        content = jsonencode([{ "children" : [{ "children" : [{ "color" : "#018511", "text" : "" }] }, { "children" : [{ "color" : "#a31300", "text" : "" }, { "children" : [{ "text" : "" }], "color" : "#a31300", "defaultTranslation" : "You have reached your resend limit. Try again later.", "inline" : true, "key" : "auth-policy.recover-account.ReachedResendLimit", "type" : "i18n" }, { "text" : "" }] }, { "children" : [{ "color" : "#018511", "text" : "" }] }], "type" : "align-center" }]),
         icon = {
           size = "MEDIUM",
           type = "NONE"
@@ -946,7 +994,7 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
       },
       {
         key   = "resend-code-link",
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.ResendCode\\\",\\\"defaultTranslation\\\":\\\"Resend Code\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Resend Code", "inline" : true, "key" : "auth-policy.recover-account.ResendCode", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 6
@@ -958,7 +1006,7 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
         }
       },
       {
-        label = "\"[{\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Continue\\\",\\\"defaultTranslation\\\":\\\"Continue\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}],\\\"type\\\":\\\"paragraph\\\"}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Continue", "inline" : true, "key" : "auth-policy.recover-account.Continue", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 7
@@ -974,7 +1022,7 @@ resource "pingone_form" "irco_starter_kit__e28094__verification_code" {
       },
       {
         key   = "cancel-link",
-        label = "\"[{\\\"type\\\":\\\"paragraph\\\",\\\"children\\\":[{\\\"text\\\":\\\"\\\"},{\\\"type\\\":\\\"i18n\\\",\\\"key\\\":\\\"auth-policy.recover-account.Cancel\\\",\\\"defaultTranslation\\\":\\\"Cancel\\\",\\\"inline\\\":true,\\\"children\\\":[{\\\"text\\\":\\\"\\\"}]},{\\\"text\\\":\\\"\\\"}]}]\"",
+        label = jsonencode([{ "children" : [{ "text" : "" }, { "children" : [{ "text" : "" }], "defaultTranslation" : "Cancel", "inline" : true, "key" : "auth-policy.recover-account.Cancel", "type" : "i18n" }, { "text" : "" }], "type" : "paragraph" }]),
         position = {
           col = 0,
           row = 8
